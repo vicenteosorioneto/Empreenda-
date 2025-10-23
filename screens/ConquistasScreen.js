@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -8,128 +8,47 @@ import {
   FlatList,
   Dimensions
 } from 'react-native';
+import { getUserMedals } from '../utils/storage';
+import medals from '../data/medals';
 
 const { width } = Dimensions.get('window');
 
 const ConquistasScreen = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('todas');
-  
-  const [conquistas] = useState([
-    {
-      id: 1,
-      titulo: 'Primeiro Passo',
-      descricao: 'Complete sua primeira missão',
-      icon: '👶',
-      tipo: 'bronze',
-      categoria: 'iniciante',
-      conquistada: true,
-      dataConquista: '2024-01-15',
-      xpReward: 50,
-      raridade: 'comum'
-    },
-    {
-      id: 2,
-      titulo: 'Explorador Nato',
-      descricao: 'Complete 5 missões diferentes',
-      icon: '🧭',
-      tipo: 'prata',
-      categoria: 'progresso',
-      conquistada: true,
-      dataConquista: '2024-01-20',
-      xpReward: 100,
-      raridade: 'comum'
-    },
-    {
-      id: 3,
-      titulo: 'Inovador Criativo',
-      descricao: 'Crie 10 soluções inovadoras',
-      icon: '💡',
-      tipo: 'ouro',
-      categoria: 'criatividade',
-      conquistada: true,
-      dataConquista: '2024-01-25',
-      xpReward: 200,
-      raridade: 'raro'
-    },
-    {
-      id: 4,
-      titulo: 'Mestre do Pitch',
-      descricao: 'Apresente sua ideia com nota 9+',
-      icon: '🎤',
-      tipo: 'diamante',
-      categoria: 'habilidade',
-      conquistada: false,
-      xpReward: 300,
-      raridade: 'épico'
-    },
-    {
-      id: 5,
-      titulo: 'Empreendedor Social',
-      descricao: 'Crie 3 projetos com impacto social',
-      icon: '🤝',
-      tipo: 'especial',
-      categoria: 'impacto',
-      conquistada: false,
-      xpReward: 250,
-      raridade: 'raro'
-    },
-    {
-      id: 6,
-      titulo: 'Líder Nato',
-      descricao: 'Forme e lidere 5 equipes',
-      icon: '👑',
-      tipo: 'lendario',
-      categoria: 'lideranca',
-      conquistada: false,
-      xpReward: 500,
-      raridade: 'lendário'
-    },
-    {
-      id: 7,
-      titulo: 'Visionário',
-      descricao: 'Identifique 20 oportunidades de mercado',
-      icon: '🔮',
-      tipo: 'especial',
-      categoria: 'visao',
-      conquistada: true,
-      dataConquista: '2024-02-01',
-      xpReward: 180,
-      raridade: 'raro'
-    },
-    {
-      id: 8,
-      titulo: 'Sustentável',
-      descricao: 'Desenvolva 5 soluções eco-friendly',
-      icon: '🌱',
-      tipo: 'ouro',
-      categoria: 'sustentabilidade',
-      conquistada: false,
-      xpReward: 220,
-      raridade: 'raro'
-    },
-    {
-      id: 9,
-      titulo: 'Networking Master',
-      descricao: 'Conecte-se com 50 outros empreendedores',
-      icon: '🌐',
-      tipo: 'prata',
-      categoria: 'social',
-      conquistada: false,
-      xpReward: 150,
-      raridade: 'comum'
-    },
-    {
-      id: 10,
-      titulo: 'MVP Champion',
-      descricao: 'Lance 3 MVPs validados pelo mercado',
-      icon: '🚀',
-      tipo: 'diamante',
-      categoria: 'produto',
-      conquistada: false,
-      xpReward: 400,
-      raridade: 'épico'
+  const [conquistas, setConquistas] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadConquistas();
+  }, []);
+
+  const loadConquistas = async () => {
+    try {
+      setLoading(true);
+      
+      // Carrega medalhas do usuário
+      const userMedals = await getUserMedals();
+      
+      // Combina medalhas disponíveis com o status do usuário
+      const allMedals = medals.map(medal => {
+        const userMedal = userMedals.find(um => um.id === medal.id);
+        return {
+          ...medal,
+          conquistada: !!userMedal,
+          dataConquista: userMedal?.dateAwarded,
+          progresso: userMedal?.progress || 0
+        };
+      });
+      
+      setConquistas(allMedals);
+    } catch (error) {
+      console.error('Erro ao carregar conquistas:', error);
+      // Fallback para dados mock se houver erro
+      setConquistas(medals.map(medal => ({ ...medal, conquistada: false, progresso: 0 })));
+    } finally {
+      setLoading(false);
     }
-  ]);
+  };
 
   const tabs = [
     { id: 'todas', title: 'Todas', icon: '🏆' },
@@ -250,6 +169,14 @@ const ConquistasScreen = ({ navigation }) => {
     xpTotal: conquistas.filter(c => c.conquistada).reduce((acc, c) => acc + c.xpReward, 0),
     porcentagem: Math.round((conquistas.filter(c => c.conquistada).length / conquistas.length) * 100)
   };
+
+  if (loading) {
+    return (
+      <View style={[styles.container, styles.loadingContainer]}>
+        <Text style={styles.loadingText}>Carregando conquistas...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -569,6 +496,14 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 18,
+    color: '#6B7280',
   },
 });
 

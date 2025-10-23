@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -8,70 +8,88 @@ import {
   Animated 
 } from 'react-native';
 import Logo from '../components/Logo';
+import missions from '../data/missions';
+import { 
+  getUserStats, 
+  getMissionsProgress 
+} from '../utils/storage';
 
 const MainHubScreen = ({ navigation }) => {
-  const [userLevel] = useState(3);
-  const [userXP] = useState(750);
-  const [maxXP] = useState(1000);
+  const [userStats, setUserStats] = useState({ level: 1, totalXP: 0 });
+  const [trilhas, setTrilhas] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const trilhas = [
-    {
-      id: 1,
-      title: '🔍 Descubra um Problema',
-      description: 'Identifique desafios do mundo real',
-      progress: 100,
-      unlocked: true,
-      completed: true,
-      xp: 200,
-      color: '#EF4444'
-    },
-    {
-      id: 2,
-      title: '💡 Crie uma Solução',
-      description: 'Desenvolva ideias inovadoras',
-      progress: 60,
-      unlocked: true,
-      completed: false,
-      xp: 150,
-      color: '#F59E0B'
-    },
-    {
-      id: 3,
-      title: '👥 Monte seu Time',
-      description: 'Forme uma equipe incrível',
-      progress: 0,
-      unlocked: true,
-      completed: false,
-      xp: 0,
-      color: '#3B82F6'
-    },
-    {
-      id: 4,
-      title: '✅ Valide sua Ideia',
-      description: 'Teste e aprimore sua solução',
-      progress: 0,
-      unlocked: false,
-      completed: false,
-      xp: 0,
-      color: '#8B5CF6'
-    },
-    {
-      id: 5,
-      title: '🎤 Faça seu Pitch',
-      description: 'Apresente sua ideia ao mundo',
-      progress: 0,
-      unlocked: false,
-      completed: false,
-      xp: 0,
-      color: '#EC4899'
+  useEffect(() => {
+    loadUserData();
+  }, []);
+
+  const loadUserData = async () => {
+    try {
+      setLoading(true);
+      
+      // Carrega estatísticas do usuário
+      const stats = await getUserStats();
+      setUserStats(stats);
+      
+      // Carrega progresso das missões
+      const missionsProgress = await getMissionsProgress();
+      
+      // Converte os dados das trilhas para o formato do hub
+      const trilhasData = Object.entries(missions).map(([key, trilha], index) => {
+        const trilhaProgress = trilha.missions.map((mission, mIndex) => {
+          const missionId = `${key}_${mIndex}`;
+          return missionsProgress[missionId] ? 100 : 0;
+        });
+        
+        const avgProgress = trilhaProgress.reduce((a, b) => a + b, 0) / trilhaProgress.length;
+        const completed = avgProgress === 100;
+        
+        return {
+          id: key,
+          title: trilha.title,
+          description: trilha.description,
+          progress: avgProgress,
+          unlocked: index === 0 || trilhas[index - 1]?.progress > 50, // Primeira trilha ou anterior com progresso
+          completed,
+          xp: trilha.missions.reduce((total, mission) => total + (mission.xp || 200), 0),
+          color: ['#EF4444', '#F59E0B', '#3B82F6', '#10B981', '#8B5CF6'][index % 5]
+        };
+      });
+      
+      setTrilhas(trilhasData);
+    } catch (error) {
+      console.error('Erro ao carregar dados:', error);
+      // Fallback para dados estáticos se houver erro
+      setTrilhas([
+        {
+          id: '1',
+          title: '🔍 Descubra um Problema',
+          description: 'Identifique desafios do mundo real',
+          progress: 0,
+          unlocked: true,
+          completed: false,
+          xp: 200,
+          color: '#EF4444'
+        }
+      ]);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
   const handleTrilhaPress = (trilha) => {
     if (trilha.unlocked) {
       navigation.navigate('Mission', { trilha });
     }
   };
+
+  if (loading) {
+    return (
+      <View style={[styles.container, styles.loadingContainer]}>
+        <Text style={styles.loadingText}>Carregando trilhas...</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -83,7 +101,7 @@ const MainHubScreen = ({ navigation }) => {
           </View>
           <View style={styles.userInfo}>
             <Text style={styles.userName}>Jovem Empreendedor</Text>
-            <Text style={styles.userLevel}>Nível {userLevel}</Text>
+            <Text style={styles.userLevel}>Nível {userStats.level || 1}</Text>
           </View>
           <TouchableOpacity 
             style={styles.settingsButton}
@@ -95,12 +113,12 @@ const MainHubScreen = ({ navigation }) => {
 
         {/* Barra de XP */}
         <View style={styles.xpContainer}>
-          <Text style={styles.xpText}>XP: {userXP}/{maxXP}</Text>
+          <Text style={styles.xpText}>XP: {userStats.totalXP || 0}/{(userStats.level || 1) * 1000}</Text>
           <View style={styles.xpBar}>
             <View 
               style={[
                 styles.xpProgress, 
-                { width: `${(userXP / maxXP) * 100}%` }
+                { width: `${((userStats.totalXP || 0) / ((userStats.level || 1) * 1000)) * 100}%` }
               ]} 
             />
           </View>
@@ -436,6 +454,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#6B7280',
     textAlign: 'center',
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 18,
+    color: '#6B7280',
   },
 });
 

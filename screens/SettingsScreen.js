@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -8,6 +8,11 @@ import {
   Switch,
   Alert
 } from 'react-native';
+import { 
+  getSettings, 
+  saveSettings, 
+  clearAllData 
+} from '../utils/storage';
 
 const SettingsScreen = ({ navigation }) => {
   const [settings, setSettings] = useState({
@@ -20,12 +25,42 @@ const SettingsScreen = ({ navigation }) => {
     analytics: true,
     reminders: true
   });
+  const [loading, setLoading] = useState(true);
 
-  const toggleSetting = (key) => {
-    setSettings(prev => ({
-      ...prev,
-      [key]: !prev[key]
-    }));
+  useEffect(() => {
+    loadSettings();
+  }, []);
+
+  const loadSettings = async () => {
+    try {
+      setLoading(true);
+      const savedSettings = await getSettings();
+      if (savedSettings) {
+        setSettings(prev => ({ ...prev, ...savedSettings }));
+      }
+    } catch (error) {
+      console.error('Erro ao carregar configurações:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleSetting = async (key) => {
+    const newSettings = {
+      ...settings,
+      [key]: !settings[key]
+    };
+    
+    setSettings(newSettings);
+    
+    try {
+      await saveSettings(newSettings);
+    } catch (error) {
+      console.error('Erro ao salvar configuração:', error);
+      // Reverter mudança se houver erro
+      setSettings(settings);
+      Alert.alert('Erro', 'Não foi possível salvar a configuração. Tente novamente.');
+    }
   };
 
   const handleLogout = () => {
@@ -46,21 +81,35 @@ const SettingsScreen = ({ navigation }) => {
     );
   };
 
-  const handleDeleteAccount = () => {
+  const handleDeleteAccount = async () => {
     Alert.alert(
       'Excluir Conta',
-      'ATENÇÃO: Esta ação é irreversível! Todos os seus dados, progresso e conquistas serão perdidos permanentemente.',
+      'ATENÇÃO: Esta ação irá deletar todos os seus dados permanentemente. Esta ação não pode ser desfeita.',
       [
         { text: 'Cancelar', style: 'cancel' },
         { 
           text: 'Excluir', 
           style: 'destructive',
-          onPress: () => {
-            Alert.alert('Conta excluída', 'Sua conta foi excluída com sucesso.');
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Login' }],
-            });
+          onPress: async () => {
+            try {
+              await clearAllData();
+              Alert.alert(
+                'Conta Excluída',
+                'Todos os seus dados foram excluídos com sucesso.',
+                [
+                  {
+                    text: 'OK',
+                    onPress: () => navigation.reset({
+                      index: 0,
+                      routes: [{ name: 'Login' }],
+                    })
+                  }
+                ]
+              );
+            } catch (error) {
+              console.error('Erro ao excluir dados:', error);
+              Alert.alert('Erro', 'Não foi possível excluir os dados. Tente novamente.');
+            }
           }
         }
       ]
@@ -115,6 +164,14 @@ const SettingsScreen = ({ navigation }) => {
       ]}>→</Text>
     </TouchableOpacity>
   );
+
+  if (loading) {
+    return (
+      <View style={[styles.container, styles.loadingContainer]}>
+        <Text style={styles.loadingText}>Carregando configurações...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -436,6 +493,14 @@ const styles = StyleSheet.create({
   footerSubtext: {
     fontSize: 14,
     color: '#9CA3AF',
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 18,
+    color: '#6B7280',
   },
 });
 

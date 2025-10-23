@@ -1,80 +1,76 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   View, 
   Text, 
   StyleSheet, 
   ScrollView, 
-  TouchableOpacity,
+  TouchableOpacity, 
   TextInput,
-  Alert 
+  Alert,
+  Animated
 } from 'react-native';
-import { FeedbackPopup } from '../components/Gamification';
+import { XPBar, FeedbackPopup } from '../components/Gamification';
+import missions from '../data/missions';
+import { 
+  getUserStats, 
+  getMissionsProgress, 
+  completeMission, 
+  addXP,
+  checkAndAwardMedals 
+} from '../utils/storage';
 
 const MissionScreen = ({ navigation, route }) => {
   const { trilha } = route.params;
-  const [resposta, setResposta] = useState('');
+  const [currentMissionIndex, setCurrentMissionIndex] = useState(0);
+  const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [userAnswer, setUserAnswer] = useState('');
+  const [quizAnswers, setQuizAnswers] = useState([]);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [feedbackData, setFeedbackData] = useState(null);
+  const [userStats, setUserStats] = useState({ totalXP: 0, level: 1 });
+  const [missionProgress, setMissionProgress] = useState(null);
+  const [resposta, setResposta] = useState('');
 
-  const missoes = {
-    1: {
-      titulo: '🔍 Descubra um Problema',
-      descricao: 'Identifique um problema real na sua comunidade, escola ou meio ambiente que você gostaria de resolver.',
-      instrucoes: [
-        '💭 Observe ao seu redor: o que poderia ser melhorado?',
-        '🌍 Pense em questões ambientais, sociais ou tecnológicas',
-        '👥 Converse com amigos e família sobre os desafios que enfrentam',
-        '📝 Descreva o problema de forma clara e específica'
-      ],
-      pergunta: 'Qual problema você identificou? Descreva em detalhes:',
-      exemplos: [
-        'Desperdício de comida na cantina da escola',
-        'Falta de áreas verdes no bairro',
-        'Dificuldade dos idosos em usar tecnologia'
-      ],
-      xpReward: 200,
-      tipo: 'texto'
-    },
-    2: {
-      titulo: '💡 Crie uma Solução',
-      descricao: 'Agora é hora de usar sua criatividade! Desenvolva uma solução inovadora para o problema que você identificou.',
-      instrucoes: [
-        '🧠 Use sua criatividade - não existem ideias ruins!',
-        '🔧 Pense em soluções práticas e viáveis',
-        '💚 Considere o impacto positivo da sua ideia',
-        '🚀 Seja inovador - como a tecnologia pode ajudar?'
-      ],
-      pergunta: 'Qual sua solução criativa? Explique como funcionaria:',
-      exemplos: [
-        'App para redistribuir comida não consumida',
-        'Projeto de hortas comunitárias verticais',
-        'Curso de tecnologia para terceira idade'
-      ],
-      xpReward: 250,
-      tipo: 'texto'
-    },
-    3: {
-      titulo: '👥 Monte seu Time',
-      descricao: 'Todo empreendedor precisa de uma equipe! Identifique as habilidades necessárias e quem poderia fazer parte do seu time.',
-      instrucoes: [
-        '🎯 Liste as habilidades necessárias para o projeto',
-        '👥 Pense em colegas que têm essas habilidades',
-        '🤝 Considere pessoas que compartilham sua paixão',
-        '⚖️ Balance diferentes perspectivas e talentos'
-      ],
-      pergunta: 'Quem faria parte do seu time e por quê?',
-      exemplos: [
-        'João (programador), Maria (designer), Ana (marketing)',
-        'Colega que ama plantas + amigo que entende de redes sociais',
-        'Professor de informática + alunos voluntários'
-      ],
-      xpReward: 200,
-      tipo: 'texto'
+  // Busca dados da trilha no sistema estruturado
+  const trilhaData = missions[trilha.id];
+  const currentMission = trilhaData?.missions[currentMissionIndex];
+
+  useEffect(() => {
+    loadUserData();
+  }, []);
+
+  const loadUserData = async () => {
+    try {
+      const stats = await getUserStats();
+      const progress = await getMissionsProgress();
+      setUserStats(stats);
+      setMissionProgress(progress);
+    } catch (error) {
+      console.error('Erro ao carregar dados:', error);
     }
   };
 
-  const missaoAtual = missoes[trilha.id];
+  const missaoAtual = currentMission || {
+    titulo: '� Missão Especial',
+    descricao: 'Uma missão especial para desenvolver suas habilidades empreendedoras.',
+    instrucoes: [
+      '💭 Observe ao seu redor: o que poderia ser melhorado?',
+      '🌍 Pense em questões ambientais, sociais ou tecnológicas',
+      '👥 Converse com amigos e família sobre os desafios que enfrentam',
+      '📝 Descreva o problema de forma clara e específica'
+    ],
+    pergunta: 'Qual problema você identificou? Descreva em detalhes:',
+    exemplos: [
+      'Desperdício de comida na cantina da escola',
+      'Falta de áreas verdes no bairro',
+      'Dificuldade dos idosos em usar tecnologia'
+    ],
+    xpReward: 200,
+    tipo: 'texto'
+  };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (resposta.trim().length < 50) {
       Alert.alert(
         'Resposta muito curta',
@@ -83,12 +79,28 @@ const MissionScreen = ({ navigation, route }) => {
       return;
     }
 
-    setShowFeedback(true);
-    
-    // Simular progresso na trilha
-    setTimeout(() => {
-      navigation.goBack();
-    }, 3000);
+    try {
+      // Salva a resposta e completa a missão
+      const missionId = `${trilha.id}_${currentMissionIndex}`;
+      await completeMission(missionId, resposta);
+      
+      // Adiciona XP
+      const xpGained = missaoAtual.xpReward || missaoAtual.xp || 200;
+      await addXP(xpGained);
+      
+      // Verifica e concede medalhas
+      await checkAndAwardMedals();
+      
+      setShowFeedback(true);
+      
+      // Volta para a tela anterior após um tempo
+      setTimeout(() => {
+        navigation.goBack();
+      }, 3000);
+    } catch (error) {
+      console.error('Erro ao salvar progresso:', error);
+      Alert.alert('Erro', 'Não foi possível salvar seu progresso. Tente novamente.');
+    }
   };
 
   if (!missaoAtual) {
@@ -109,44 +121,56 @@ const MissionScreen = ({ navigation, route }) => {
         >
           <Text style={styles.backIcon}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.missaoTitulo}>{missaoAtual.titulo}</Text>
+        <Text style={styles.missaoTitulo}>{missaoAtual.title || missaoAtual.titulo}</Text>
       </View>
 
       {/* Card da Missão */}
       <View style={styles.missaoCard}>
         <Text style={styles.missaoDescricao}>
-          {missaoAtual.descricao}
+          {missaoAtual.description || missaoAtual.descricao}
         </Text>
         
         <View style={styles.xpBadge}>
-          <Text style={styles.xpText}>+{missaoAtual.xpReward} XP</Text>
+          <Text style={styles.xpText}>+{missaoAtual.xpReward || missaoAtual.xp || 200} XP</Text>
         </View>
       </View>
 
       {/* Instruções */}
       <View style={styles.instrucoesContainer}>
         <Text style={styles.sectionTitle}>📋 Como fazer:</Text>
-        {missaoAtual.instrucoes.map((instrucao, index) => (
+        {(missaoAtual.instructions || missaoAtual.instrucoes || []).map((instrucao, index) => (
           <View key={index} style={styles.instrucaoItem}>
             <Text style={styles.instrucaoTexto}>{instrucao}</Text>
           </View>
         ))}
       </View>
 
-      {/* Exemplos */}
-      <View style={styles.exemplosContainer}>
-        <Text style={styles.sectionTitle}>💡 Exemplos para inspirar:</Text>
-        {missaoAtual.exemplos.map((exemplo, index) => (
-          <View key={index} style={styles.exemploItem}>
-            <Text style={styles.exemploTexto}>• {exemplo}</Text>
+      {/* Conteúdo da missão (se existir) */}
+      {missaoAtual.content && (
+        <View style={styles.instrucoesContainer}>
+          <Text style={styles.sectionTitle}>📚 Conteúdo:</Text>
+          <View style={styles.instrucaoItem}>
+            <Text style={styles.instrucaoTexto}>{missaoAtual.content}</Text>
           </View>
-        ))}
-      </View>
+        </View>
+      )}
+
+      {/* Exemplos */}
+      {(missaoAtual.examples || missaoAtual.exemplos) && (
+        <View style={styles.exemplosContainer}>
+          <Text style={styles.sectionTitle}>💡 Exemplos para inspirar:</Text>
+          {(missaoAtual.examples || missaoAtual.exemplos || []).map((exemplo, index) => (
+            <View key={index} style={styles.exemploItem}>
+              <Text style={styles.exemploTexto}>• {exemplo}</Text>
+            </View>
+          ))}
+        </View>
+      )}
 
       {/* Área de Resposta */}
       <View style={styles.respostaContainer}>
         <Text style={styles.perguntaTexto}>
-          {missaoAtual.pergunta}
+          {missaoAtual.question || missaoAtual.pergunta || 'Descreva sua resposta para esta missão:'}
         </Text>
         
         <TextInput

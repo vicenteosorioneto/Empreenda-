@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -8,30 +8,86 @@ import {
   Image 
 } from 'react-native';
 import { XPBar, MedalhaComponent } from '../components/Gamification';
+import { 
+  getUserStats, 
+  getMissionsProgress, 
+  getUserMedals,
+  getSettings 
+} from '../utils/storage';
 
 const ProfileScreen = ({ navigation }) => {
-  const [userProfile] = useState({
+  const [userProfile, setUserProfile] = useState({
     nome: 'Jovem Empreendedor',
     avatar: '🦸‍♂️',
-    nivel: 5,
-    xp: 2250,
-    maxXP: 3000,
-    trilhasConcluidas: 3,
+    nivel: 1,
+    xp: 0,
+    maxXP: 1000,
+    trilhasConcluidas: 0,
     totalTrilhas: 5,
-    medalhas: [
-      { tipo: 'ouro', titulo: 'Explorador', descricao: 'Completou primeira trilha', conquistada: true },
-      { tipo: 'prata', titulo: 'Inovador', descricao: 'Criou 5 soluções criativas', conquistada: true },
-      { tipo: 'bronze', titulo: 'Colaborador', descricao: 'Formou equipe', conquistada: true },
-      { tipo: 'diamante', titulo: 'Visionário', descricao: 'Validou ideia com sucesso', conquistada: false },
-      { tipo: 'especial', titulo: 'Pitch Master', descricao: 'Apresentou projeto final', conquistada: false },
-    ],
+    medalhas: [],
     estatisticas: {
-      diasConsecutivos: 7,
-      pontosImpacto: 450,
-      ideiasCriadas: 12,
-      problemasSolucionados: 8
+      diasConsecutivos: 0,
+      pontosImpacto: 0,
+      ideiasCriadas: 0,
+      problemasSolucionados: 0
     }
   });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadUserData();
+  }, []);
+
+  const loadUserData = async () => {
+    try {
+      setLoading(true);
+      
+      // Carrega estatísticas do usuário
+      const stats = await getUserStats();
+      
+      // Carrega progresso das missões
+      const missionsProgress = await getMissionsProgress();
+      
+      // Carrega medalhas
+      const medals = await getUserMedals();
+      
+      // Carrega configurações
+      const settings = await getSettings();
+      
+      // Calcula progresso das trilhas
+      const completedMissions = Object.keys(missionsProgress || {}).length;
+      const trilhasConcluidas = Math.floor(completedMissions / 3); // 3 missões por trilha
+      
+      setUserProfile({
+        nome: settings.username || 'Jovem Empreendedor',
+        avatar: settings.avatar || '🦸‍♂️',
+        nivel: stats.level || 1,
+        xp: stats.totalXP || 0,
+        maxXP: stats.level ? stats.level * 1000 : 1000,
+        trilhasConcluidas,
+        totalTrilhas: 5,
+        medalhas: medals || [],
+        estatisticas: {
+          diasConsecutivos: stats.consecutiveDays || 0,
+          pontosImpacto: stats.impactPoints || 0,
+          ideiasCriadas: stats.ideasCreated || 0,
+          problemasSolucionados: completedMissions
+        }
+      });
+    } catch (error) {
+      console.error('Erro ao carregar dados do perfil:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={[styles.container, styles.loadingContainer]}>
+        <Text style={styles.loadingText}>Carregando perfil...</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -437,6 +493,14 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   actionArrow: {
+    fontSize: 18,
+    color: '#6B7280',
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
     fontSize: 18,
     color: '#6B7280',
   },
