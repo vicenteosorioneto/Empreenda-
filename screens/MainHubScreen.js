@@ -34,8 +34,8 @@ const MainHubScreen = ({ navigation }) => {
       // Carrega progresso das missões
       const missionsProgress = await getMissionsProgress();
       
-      // Converte os dados das trilhas para o formato do hub
-      const trilhasData = Object.entries(missions).map(([key, trilha], index) => {
+      // Primeiro passe: calcular progresso de cada trilha
+      const trilhasProgressData = Object.entries(missions).map(([key, trilha], index) => {
         const trilhaProgress = trilha.missions.map((mission, mIndex) => {
           const missionId = `${key}_${mIndex}`;
           return missionsProgress[missionId] ? 100 : 0;
@@ -49,10 +49,28 @@ const MainHubScreen = ({ navigation }) => {
           title: trilha.title,
           description: trilha.description,
           progress: avgProgress,
-          unlocked: index === 0 || trilhas[index - 1]?.progress > 50, // Primeira trilha ou anterior com progresso
           completed,
-          xp: trilha.missions.reduce((total, mission) => total + (mission.xp || 200), 0),
-          color: ['#EF4444', '#F59E0B', '#3B82F6', '#10B981', '#8B5CF6'][index % 5]
+          xp: trilha.missions.reduce((total, mission) => total + (mission.xpReward || mission.xp || 200), 0),
+          color: trilha.color || ['#EF4444', '#F59E0B', '#3B82F6', '#10B981', '#8B5CF6'][index % 5],
+          totalMissions: trilha.missions.length,
+          completedMissions: trilhaProgress.filter(p => p === 100).length
+        };
+      });
+      
+      // Segundo passe: calcular desbloqueio baseado no progresso anterior
+      const trilhasData = trilhasProgressData.map((trilha, index) => {
+        const unlockThreshold = 50;
+        const isFirstTrilha = index === 0;
+        const previousTrilhaProgress = index > 0 ? trilhasProgressData[index - 1]?.progress || 0 : 100;
+        const isUnlocked = isFirstTrilha || previousTrilhaProgress >= unlockThreshold;
+        const almostUnlocked = !isUnlocked && previousTrilhaProgress >= (unlockThreshold - 25);
+        const progressNeededToUnlock = Math.max(0, unlockThreshold - previousTrilhaProgress);
+        
+        return {
+          ...trilha,
+          unlocked: isUnlocked,
+          almostUnlocked: almostUnlocked,
+          progressNeededToUnlock: progressNeededToUnlock,
         };
       });
       
@@ -143,7 +161,9 @@ const MainHubScreen = ({ navigation }) => {
                   styles.trilhaCard,
                   { 
                     backgroundColor: trilha.unlocked ? trilha.color : '#D1D5DB',
-                    opacity: trilha.unlocked ? 1 : 0.6 
+                    opacity: trilha.unlocked ? 1 : (trilha.almostUnlocked ? 0.8 : 0.6),
+                    borderColor: trilha.almostUnlocked ? trilha.color : 'transparent',
+                    borderWidth: trilha.almostUnlocked ? 2 : 0
                   }
                 ]}
                 onPress={() => handleTrilhaPress(trilha)}
@@ -154,8 +174,11 @@ const MainHubScreen = ({ navigation }) => {
                   {trilha.completed && (
                     <Text style={styles.completedBadge}>✅</Text>
                   )}
-                  {!trilha.unlocked && (
+                  {!trilha.unlocked && !trilha.almostUnlocked && (
                     <Text style={styles.lockedBadge}>🔒</Text>
+                  )}
+                  {trilha.almostUnlocked && (
+                    <Text style={styles.almostUnlockedBadge}>⚡</Text>
                   )}
                 </View>
                 
@@ -166,17 +189,42 @@ const MainHubScreen = ({ navigation }) => {
                 {trilha.unlocked && (
                   <View style={styles.progressContainer}>
                     <Text style={styles.progressText}>
-                      Progresso: {trilha.progress}%
+                      Progresso: {trilha.progress.toFixed(0)}% ({trilha.completedMissions}/{trilha.totalMissions})
                     </Text>
                     <View style={styles.progressBar}>
                       <View 
                         style={[
                           styles.progressFill,
-                          { width: `${trilha.progress}%` }
+                          { width: `${trilha.progress}%`, backgroundColor: trilha.color }
                         ]} 
                       />
                     </View>
                     <Text style={styles.xpReward}>+{trilha.xp} XP</Text>
+                  </View>
+                )}
+                
+                {!trilha.unlocked && trilha.almostUnlocked && (
+                  <View style={styles.unlockedProgressContainer}>
+                    <Text style={styles.unlockedProgressText}>
+                      🌟 Faltam {trilha.progressNeededToUnlock.toFixed(0)}% para desbloquear!
+                    </Text>
+                    <View style={styles.progressBar}>
+                      <View 
+                        style={[
+                          styles.progressFill,
+                          { width: `${100 - trilha.progressNeededToUnlock}%`, backgroundColor: '#F59E0B' }
+                        ]} 
+                      />
+                    </View>
+                    <Text style={styles.unlockedHintText}>Complete a trilha anterior para continuar</Text>
+                  </View>
+                )}
+                
+                {!trilha.unlocked && !trilha.almostUnlocked && (
+                  <View style={styles.lockedContainer}>
+                    <Text style={styles.lockedText}>
+                      🔐 Desbloqueável ao completar a trilha anterior
+                    </Text>
                   </View>
                 )}
               </TouchableOpacity>
@@ -396,6 +444,38 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'right',
+  },
+  unlockedProgressContainer: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 8,
+  },
+  unlockedProgressText: {
+    fontSize: 12,
+    color: 'white',
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  unlockedHintText: {
+    fontSize: 11,
+    color: 'rgba(255,255,255,0.8)',
+    marginTop: 5,
+    fontStyle: 'italic',
+  },
+  almostUnlockedBadge: {
+    fontSize: 18,
+  },
+  lockedContainer: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: 'rgba(0,0,0,0.1)',
+    borderRadius: 8,
+  },
+  lockedText: {
+    fontSize: 12,
+    color: '#666',
+    textAlign: 'center',
   },
   achievementsSection: {
     padding: 20,
