@@ -8,7 +8,7 @@ import {
   Animated 
 } from 'react-native';
 import Logo from '../components/Logo';
-import missions from '../data/missions';
+import { missions } from '../data/missions';
 import { 
   getUserStats, 
   getMissionsProgress 

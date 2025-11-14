@@ -10,7 +10,7 @@ import {
   Animated
 } from 'react-native';
 import { XPBar, FeedbackPopup } from '../components/Gamification';
-import missions from '../data/missions';
+import { missions } from '../data/missions';
 import { 
   getUserStats, 
   getMissionsProgress, 
