@@ -138,13 +138,36 @@ export const addXP = async (xpToAdd) => {
 };
 
 // Função para marcar missão como concluída
-export const completeMission = async (trilhaId, missionIndex) => {
+export const completeMission = async (missionId, response = null) => {
   try {
     const progress = await getMissionsProgress();
+    
+    // Parse missionId para extrair trilhaId e missionIndex
+    // Formato esperado: "trilha1_0", "trilha2_1", etc
+    const parts = missionId.split('_');
+    const trilhaId = parts.slice(0, -1).join('_'); // Em caso de IDs com underscore
+    const missionIndex = parseInt(parts[parts.length - 1]);
+    
+    // Inicializa a estrutura se não existir
+    if (!progress[trilhaId]) {
+      progress[trilhaId] = {
+        completed: false,
+        missions: []
+      };
+    }
+    
+    if (!progress[trilhaId].missions) {
+      progress[trilhaId].missions = [];
+    }
+    
+    // Marca a missão como completa
     progress[trilhaId].missions[missionIndex] = true;
     
-    // Verifica se a trilha foi completada
-    const allMissionsCompleted = progress[trilhaId].missions.every(mission => mission);
+    // Verifica se a trilha foi completada (todas as missões feitas)
+    const totalMissions = progress[trilhaId].missions.length;
+    const completedMissions = progress[trilhaId].missions.filter(m => m === true).length;
+    const allMissionsCompleted = completedMissions === totalMissions && totalMissions > 0;
+    
     if (allMissionsCompleted) {
       progress[trilhaId].completed = true;
     }
@@ -153,7 +176,7 @@ export const completeMission = async (trilhaId, missionIndex) => {
     return progress;
   } catch (error) {
     console.error('Erro ao completar missão:', error);
-    return null;
+    throw error; // Relança o erro para o caller tratar
   }
 };
 

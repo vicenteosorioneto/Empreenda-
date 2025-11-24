@@ -111,6 +111,34 @@ const MainHubScreen = ({ navigation }) => {
 
   return (
     <ScrollView style={styles.container}>
+      {/* Header com botão de voltar */}
+      <View style={styles.topHeader}>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => {
+            // Evita erro quando não há tela anterior na pilha
+            try {
+              if (navigation && navigation.canGoBack && navigation.canGoBack()) {
+                navigation.goBack();
+                return;
+              }
+            } catch (err) {
+              // Se goBack lançar, tratamos abaixo
+              console.warn('goBack failed:', err);
+            }
+
+            // Fallback: navegar para a rota inicial (Splash)
+            if (navigation && navigation.navigate) {
+              navigation.navigate('Splash');
+            }
+          }}
+        >
+          <Text style={styles.backIcon}>←</Text>
+        </TouchableOpacity>
+        <Text style={styles.topHeaderTitle}>Mapa de Trilhas</Text>
+        <View style={{ width: 40 }} />
+      </View>
+
       {/* Header com perfil do usuário */}
       <View style={styles.header}>
         <View style={styles.profileSection}>
@@ -295,10 +323,39 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F0F9FF',
   },
+  topHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 50,
+    paddingBottom: 15,
+    backgroundColor: 'white',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backIcon: {
+    fontSize: 24,
+    color: '#6B7280',
+    fontWeight: 'bold',
+  },
+  topHeaderTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    flex: 1,
+    textAlign: 'center',
+  },
   header: {
     backgroundColor: 'white',
     padding: 20,
-    paddingTop: 50,
+    paddingTop: 20,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
     shadowColor: '#000',

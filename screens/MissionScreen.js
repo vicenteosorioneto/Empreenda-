@@ -99,7 +99,10 @@ const MissionScreen = ({ navigation, route }) => {
       }, 3000);
     } catch (error) {
       console.error('Erro ao salvar progresso:', error);
-      Alert.alert('Erro', 'Não foi possível salvar seu progresso. Tente novamente.');
+      Alert.alert(
+        'Erro ao Completar Missão', 
+        'Não foi possível salvar seu progresso. Por favor, tente novamente.'
+      );
     }
   };
 
