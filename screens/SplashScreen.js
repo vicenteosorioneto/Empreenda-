@@ -55,7 +55,7 @@ const SplashScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'linear-gradient(135deg, #10B981 0%, #3B82F6 100%)',
+    backgroundColor: '#0F172A',
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
@@ -70,9 +70,9 @@ const styles = StyleSheet.create({
     left: '10%',
     width: 20,
     height: 20,
-    backgroundColor: '#FDE047',
+    backgroundColor: '#0066FF',
     borderRadius: 10,
-    opacity: 0.6,
+    opacity: 0.4,
   },
   particle2: {
     position: 'absolute',
@@ -80,9 +80,9 @@ const styles = StyleSheet.create({
     right: '15%',
     width: 15,
     height: 15,
-    backgroundColor: '#F59E0B',
+    backgroundColor: '#7C3AED',
     borderRadius: 10,
-    opacity: 0.4,
+    opacity: 0.3,
   },
   particle3: {
     position: 'absolute',

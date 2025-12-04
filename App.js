@@ -9,6 +9,7 @@ import SplashScreen from './screens/SplashScreen';
 import OnboardingScreen from './screens/OnboardingScreen';
 import LoginScreen from './screens/LoginScreen';
 import MainHubScreen from './screens/MainHubScreen';
+import MainHubScreenNeon from './screens/MainHubScreenNeon';
 import MissionScreen from './screens/MissionScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import RankingScreen from './screens/RankingScreen';
@@ -47,7 +48,7 @@ export default function App() {
           <Stack.Screen name="Splash" component={SplashScreen} />
           <Stack.Screen name="Onboarding" component={OnboardingScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="MainHub" component={MainHubScreen} />
+          <Stack.Screen name="MainHub" component={MainHubScreenNeon} />
           <Stack.Screen name="Mission" component={MissionScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
           <Stack.Screen name="Ranking" component={RankingScreen} />

@@ -37,8 +37,8 @@ const MainHubScreen = ({ navigation }) => {
       // Primeiro passe: calcular progresso de cada trilha
       const trilhasProgressData = Object.entries(missions).map(([key, trilha], index) => {
         const trilhaProgress = trilha.missions.map((mission, mIndex) => {
-          const missionId = `${key}_${mIndex}`;
-          return missionsProgress[missionId] ? 100 : 0;
+          const missionCompleted = missionsProgress[key]?.missions?.[mIndex] || false;
+          return missionCompleted ? 100 : 0;
         });
         
         const avgProgress = trilhaProgress.reduce((a, b) => a + b, 0) / trilhaProgress.length;

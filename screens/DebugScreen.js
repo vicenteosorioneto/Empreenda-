@@ -164,7 +164,7 @@ const DebugScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F0F9FF',
+    backgroundColor: '#01080eff',
   },
   loadingContainer: {
     justifyContent: 'center',
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 18,
-    color: '#6B7280',
+    color: '#010714ff',
   },
   header: {
     flexDirection: 'row',
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   },
   backIcon: {
     fontSize: 24,
-    color: '#6B7280',
+    color: '#00050fff',
   },
   headerTitle: {
     fontSize: 20,
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: 'monospace',
     color: '#374151',
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#000308ff',
     padding: 10,
     borderRadius: 8,
   },

@@ -8,6 +8,7 @@ import {
   ScrollView,
   Animated
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const { width, height } = Dimensions.get('window');
 
@@ -23,7 +24,7 @@ const OnboardingScreen = ({ navigation }) => {
       subtitle: 'Sua jornada empreendedora começa aqui!',
       description: 'Descubra, aprenda e transforme suas ideias em projetos reais que fazem a diferença no mundo.',
       emoji: '🧭',
-      color: '#10B981',
+      color: '#0066FF',
       features: [
         { icon: '🗺️', text: 'Trilhas de aprendizado gamificadas' },
         { icon: '🏆', text: 'Sistema de conquistas e XP' },
@@ -37,7 +38,7 @@ const OnboardingScreen = ({ navigation }) => {
       subtitle: '5 caminhos para dominar o empreendedorismo',
       description: 'Cada trilha te ensina uma habilidade essencial. Complete missões, ganhe XP e desbloqueie novos desafios!',
       emoji: '🗺️',
-      color: '#3B82F6',
+      color: '#7C3AED',
       features: [
         { icon: '💡', text: 'Identificação de Oportunidades' },
         { icon: '🎯', text: 'Validação de Ideias' },
@@ -52,7 +53,7 @@ const OnboardingScreen = ({ navigation }) => {
       subtitle: 'Evolua como empreendedor',
       description: 'Complete missões, resolva desafios e colabore com outros. Cada ação te dá pontos de experiência!',
       emoji: '🏆',
-      color: '#F59E0B',
+      color: '#10B981',
       features: [
         { icon: '⭐', text: 'Ganhe XP a cada missão' },
         { icon: '🎖️', text: 'Desbloqueie medalhas especiais' },
@@ -66,7 +67,7 @@ const OnboardingScreen = ({ navigation }) => {
       subtitle: 'Transforme o mundo com suas ideias',
       description: 'Seus projetos podem gerar impacto positivo na sociedade. Acompanhe como você está mudando o mundo!',
       emoji: '🌍',
-      color: '#8B5CF6',
+      color: '#06B6D4',
       features: [
         { icon: '🌱', text: 'Impacto ambiental positivo' },
         { icon: '🤝', text: 'Benefício para comunidades' },
@@ -80,7 +81,7 @@ const OnboardingScreen = ({ navigation }) => {
       subtitle: 'Sua aventura empreendedora te espera',
       description: 'Pronto para se tornar o próximo grande empreendedor? Vamos criar o futuro juntos!',
       emoji: '🚀',
-      color: '#EF4444',
+      color: '#EC4899',
       features: [
         { icon: '👤', text: 'Crie seu perfil' },
         { icon: '🎯', text: 'Escolha sua primeira trilha' },
@@ -135,7 +136,7 @@ const OnboardingScreen = ({ navigation }) => {
   const currentStepData = onboardingSteps[currentStep];
 
   return (
-    <View style={[styles.container, { backgroundColor: currentStepData.color + '10' }]}>
+    <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity 
@@ -183,13 +184,19 @@ const OnboardingScreen = ({ navigation }) => {
 
           {/* Features */}
           <View style={styles.featuresContainer}>
-            {currentStepData.features.map((feature, index) => (
-              <View key={index} style={styles.featureItem}>
-                <View style={[styles.featureIcon, { backgroundColor: currentStepData.color + '20' }]}>
+            {currentStepData?.features && currentStepData.features.map((feature, index) => (
+              <LinearGradient
+                key={index}
+                colors={[ 'rgba(15, 23, 42, 0.8)', 'rgba(30, 41, 59, 0.95)' ]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.featureItem}
+              >
+                <View style={[styles.featureIcon]}>
                   <Text style={styles.featureEmoji}>{feature.icon}</Text>
                 </View>
                 <Text style={styles.featureText}>{feature.text}</Text>
-              </View>
+              </LinearGradient>
             ))}
           </View>
         </ScrollView>
@@ -231,6 +238,7 @@ const OnboardingScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#0F172A',
   },
   header: {
     flexDirection: 'row',
@@ -245,8 +253,8 @@ const styles = StyleSheet.create({
   },
   skipText: {
     fontSize: 16,
-    color: '#6B7280',
-    fontWeight: '500',
+    color: '#64B5F6',
+    fontWeight: '600',
   },
   progressContainer: {
     flexDirection: 'row',
@@ -257,6 +265,11 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
     transition: 'all 0.3s ease',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 3,
   },
   content: {
     flex: 1,
@@ -278,9 +291,11 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.3,
     shadowRadius: 20,
     elevation: 10,
+    borderWidth: 3,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   mainEmoji: {
     fontSize: 60,
@@ -290,56 +305,72 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#1F2937',
+    fontSize: 32,
+    fontWeight: '900',
+    color: '#FFFFFF',
     textAlign: 'center',
-    marginBottom: 10,
+    marginBottom: 12,
+    letterSpacing: 0.5,
   },
   subtitle: {
     fontSize: 18,
-    color: '#6B7280',
+    color: '#0FF',
     textAlign: 'center',
     marginBottom: 15,
-    fontWeight: '500',
+    fontWeight: '700',
+    letterSpacing: 0.3,
   },
   description: {
     fontSize: 16,
-    color: '#4B5563',
+    color: '#E0F2FF',
     textAlign: 'center',
-    lineHeight: 24,
+    lineHeight: 26,
+    fontWeight: '500',
   },
   featuresContainer: {
-    gap: 20,
+    gap: 12,
+    marginVertical: 10,
   },
   featureItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
-    borderRadius: 15,
+    borderRadius: 16,
     padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    marginVertical: 8,
+    overflow: 'hidden',
+    borderWidth: 2,
+    borderColor: '#00D9FF',
+    shadowColor: '#00D9FF',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 8,
   },
   featureIcon: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 15,
+    marginRight: 16,
+    backgroundColor: 'rgba(0, 217, 255, 0.2)',
+    borderWidth: 2,
+    borderColor: '#00D9FF',
+    shadowColor: '#00D9FF',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 5,
   },
   featureEmoji: {
-    fontSize: 24,
+    fontSize: 28,
   },
   featureText: {
     flex: 1,
     fontSize: 16,
-    color: '#374151',
-    fontWeight: '500',
+    color: '#FFFFFF',
+    fontWeight: '700',
+    letterSpacing: 0.3,
   },
   navigation: {
     flexDirection: 'row',
@@ -357,29 +388,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   backButton: {
-    backgroundColor: 'white',
+    backgroundColor: '#0F1B2E',
     borderWidth: 2,
-    borderColor: '#E5E7EB',
+    borderColor: '#00D9FF',
   },
   nextButton: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.4,
     shadowRadius: 10,
-    elevation: 8,
+    elevation: 10,
   },
   disabledButton: {
-    opacity: 0.5,
+    opacity: 0.4,
+    backgroundColor: '#1A2F42',
   },
   navButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 17,
+    fontWeight: '800',
+    letterSpacing: 0.5,
   },
   backButtonText: {
-    color: '#6B7280',
+    color: '#00D9FF',
   },
   nextButtonText: {
-    color: 'white',
+    color: '#FFFFFF',
   },
   disabledButtonText: {
     color: '#9CA3AF',

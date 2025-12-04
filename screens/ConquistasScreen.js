@@ -29,8 +29,9 @@ const ConquistasScreen = ({ navigation }) => {
       // Carrega medalhas do usuário
       const userMedals = await getUserMedals();
       
-      // Combina medalhas disponíveis com o status do usuário
-      const allMedals = medals.map(medal => {
+      // Converte medalhas do objeto para array e combina com o status do usuário
+      const medalsArray = Array.isArray(medals) ? medals : Object.values(medals);
+      const allMedals = medalsArray.map(medal => {
         const userMedal = userMedals.find(um => um.id === medal.id);
         return {
           ...medal,
@@ -44,7 +45,8 @@ const ConquistasScreen = ({ navigation }) => {
     } catch (error) {
       console.error('Erro ao carregar conquistas:', error);
       // Fallback para dados mock se houver erro
-      setConquistas(medals.map(medal => ({ ...medal, conquistada: false, progresso: 0 })));
+      const medalsArray = Array.isArray(medals) ? medals : Object.values(medals);
+      setConquistas(medalsArray.map(medal => ({ ...medal, conquistada: false, progresso: 0 })));
     } finally {
       setLoading(false);
     }

@@ -199,7 +199,7 @@ const ProfileScreen = ({ navigation }) => {
         
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <View style={styles.medalhasGrid}>
-            {userProfile.medalhas.map((medalha, index) => (
+            {userProfile?.medalhas && userProfile.medalhas.map((medalha, index) => (
               <MedalhaComponent
                 key={index}
                 tipo={medalha.tipo}
