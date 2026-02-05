@@ -132,7 +132,7 @@ const ConquistasScreen = ({ navigation }) => {
             { backgroundColor: getBadgeColor(conquista.tipo) }
           ]}>
             <Text style={styles.tipoBadgeText}>
-              {conquista.tipo.toUpperCase()}
+              {conquista.tipo ? conquista.tipo.toUpperCase() : 'TIPO'}
             </Text>
           </View>
           
@@ -141,7 +141,7 @@ const ConquistasScreen = ({ navigation }) => {
             { backgroundColor: getRarityColor(conquista.raridade) }
           ]}>
             <Text style={styles.raridadeBadgeText}>
-              {conquista.raridade.toUpperCase()}
+              {conquista.raridade ? conquista.raridade.toUpperCase() : 'COMUM'}
             </Text>
           </View>
         </View>
