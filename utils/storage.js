@@ -70,6 +70,11 @@ export const getMedalsUnlocked = async () => {
   return saved || [];
 };
 
+// Alias para compatibilidade
+export const getUserMedals = async () => {
+  return await getMedalsUnlocked();
+};
+
 // Funções específicas para configurações
 export const saveSettings = async (settings) => {
   return await saveData('settings', settings);
