@@ -20,6 +20,7 @@ import RankingScreenNew from './screens/RankingScreenNew';
 import ImpactScreen from './screens/ImpactScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import ConquistasScreen from './screens/ConquistasScreen';
+import QuizGameScreen from './screens/QuizGameScreen';
 import DesafioEmpreendedorScreen from './minigames/DesafioEmpreendedor';
 
 const Stack = createStackNavigator();
@@ -62,6 +63,7 @@ export default function App() {
           <Stack.Screen name="Impact" component={ImpactScreen} />
           <Stack.Screen name="Settings" component={SettingsScreen} />
           <Stack.Screen name="Conquistas" component={ConquistasScreen} />
+          <Stack.Screen name="QuizGame" component={QuizGameScreen} />
           <Stack.Screen name="DesafioEmpreendedor" component={DesafioEmpreendedorScreen} />
         </Stack.Navigator>
       </NavigationContainer>
