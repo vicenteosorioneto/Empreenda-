@@ -12,7 +12,7 @@ export default function CharacterSelectionScreen({ navigation, route }) {
   const characters = [
     {
       id: 1,
-      name: 'Alex',
+      name: 'Strategos',
       personality: 'Líder estratégico',
       gradient: ['#667eea', '#764ba2'],
       icon: 'briefcase',
@@ -20,15 +20,15 @@ export default function CharacterSelectionScreen({ navigation, route }) {
     },
     {
       id: 2,
-      name: 'Maya',
-      personality: 'Inovadora criativa',
+      name: 'Pixel',
+      personality: 'Inovador(a) criativo(a)',
       gradient: ['#f093fb', '#f5576c'],
       icon: 'bulb',
       description: 'Pensamento criativo e inovador'
     },
     {
       id: 3,
-      name: 'Davi',
+      name: 'Quantum',
       personality: 'Analista técnico',
       gradient: ['#4facfe', '#00f2fe'],
       icon: 'analytics',
@@ -36,24 +36,24 @@ export default function CharacterSelectionScreen({ navigation, route }) {
     },
     {
       id: 4,
-      name: 'Luna',
-      personality: 'Comunicadora social',
+      name: 'Vibe',
+      personality: 'Comunicador(a) social',
       gradient: ['#43e97b', '#38f9d7'],
       icon: 'people-circle',
       description: 'Networking e comunicação'
     },
     {
       id: 5,
-      name: 'Rafael',
-      personality: 'Executor prático',
+      name: 'Nexus',
+      personality: 'Executor(a) prático(a)',
       gradient: ['#fa709a', '#fee140'],
       icon: 'hammer',
       description: 'Ação e execução de projetos'
     },
     {
       id: 6,
-      name: 'Sofia',
-      personality: 'Visionária futurista',
+      name: 'Eclipse',
+      personality: 'Visionário(a) futurista',
       gradient: ['#30cfd0', '#330867'],
       icon: 'telescope',
       description: 'Visão de futuro e tendências'
