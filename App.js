@@ -16,6 +16,7 @@ import MainHubScreenNeon from './screens/MainHubScreenNeon';
 import MissionScreen from './screens/MissionScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import RankingScreen from './screens/RankingScreen';
+import RankingScreenNew from './screens/RankingScreenNew';
 import ImpactScreen from './screens/ImpactScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import ConquistasScreen from './screens/ConquistasScreen';
@@ -57,7 +58,7 @@ export default function App() {
           <Stack.Screen name="MainHub" component={MainHubScreenNeon} />
           <Stack.Screen name="Mission" component={MissionScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
-          <Stack.Screen name="Ranking" component={RankingScreen} />
+          <Stack.Screen name="Ranking" component={RankingScreenNew} />
           <Stack.Screen name="Impact" component={ImpactScreen} />
           <Stack.Screen name="Settings" component={SettingsScreen} />
           <Stack.Screen name="Conquistas" component={ConquistasScreen} />
