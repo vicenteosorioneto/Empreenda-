@@ -48,7 +48,7 @@ export default function UserTypeSelectionScreen({ navigation }) {
     >
       <View style={styles.header}>
         <Text style={styles.title}>Bem-vindo ao Empreenda+</Text>
-        <Text style={styles.subtitle}>Quem está usando o aplicativo?</Text>
+        <Text style={styles.subtitle}>Quem é você?</Text>
       </View>
 
       <View style={styles.cardsContainer}>
