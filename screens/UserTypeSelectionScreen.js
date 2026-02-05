@@ -46,6 +46,13 @@ export default function UserTypeSelectionScreen({ navigation }) {
       colors={['#1a1a2e', '#16213e', '#0f3460']}
       style={styles.container}
     >
+      <TouchableOpacity 
+        style={styles.backButton}
+        onPress={() => navigation.goBack()}
+      >
+        <Ionicons name="arrow-back" size={24} color="#fff" />
+      </TouchableOpacity>
+      
       <View style={styles.header}>
         <Text style={styles.title}>Bem-vindo ao Empreenda+</Text>
         <Text style={styles.subtitle}>Quem é você?</Text>
@@ -85,6 +92,13 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 60,
     paddingHorizontal: 20,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 50,
+    left: 20,
+    zIndex: 10,
+    padding: 10,
   },
   header: {
     marginBottom: 40,
