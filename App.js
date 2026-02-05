@@ -7,6 +7,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 // Import das telas
 import SplashScreen from './screens/SplashScreen';
 import UserTypeSelectionScreen from './screens/UserTypeSelectionScreen';
+import CharacterSelectionScreen from './screens/CharacterSelectionScreen';
 import OnboardingScreen from './screens/OnboardingScreen';
 import LoginScreen from './screens/LoginScreen';
 import MainHubScreen from './screens/MainHubScreen';
@@ -48,6 +49,7 @@ export default function App() {
         >
           <Stack.Screen name="Splash" component={SplashScreen} />
           <Stack.Screen name="UserTypeSelection" component={UserTypeSelectionScreen} />
+          <Stack.Screen name="CharacterSelection" component={CharacterSelectionScreen} />
           <Stack.Screen name="Onboarding" component={OnboardingScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="MainHub" component={MainHubScreenNeon} />
