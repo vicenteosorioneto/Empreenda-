@@ -12,10 +12,10 @@ import Logo from '../components/Logo';
 
 const LoginScreen = ({ navigation }) => {
   const [codigoEscolar, setCodigoEscolar] = useState('');
-  const [senha, setSenha] = useState('');
+  const [email, setEmail] = useState('');
 
   const handleLogin = () => {
-    if (codigoEscolar && senha) {
+    if (codigoEscolar && email) {
       navigation.replace('MainHub');
     }
   };
@@ -42,23 +42,24 @@ const LoginScreen = ({ navigation }) => {
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>🔒 Senha</Text>
+          <Text style={styles.label}>� E-mail</Text>
           <TextInput
             style={styles.input}
-            placeholder="Digite sua senha"
-            value={senha}
-            onChangeText={setSenha}
-            secureTextEntry={true}
+            placeholder="Digite seu e-mail"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
           />
         </View>
 
         <TouchableOpacity 
           style={[
             styles.loginButton,
-            (!codigoEscolar || !senha) && styles.loginButtonDisabled
+            (!codigoEscolar || !email) && styles.loginButtonDisabled
           ]}
           onPress={handleLogin}
-          disabled={!codigoEscolar || !senha}
+          disabled={!codigoEscolar || !email}
         >
           <Text style={styles.loginButtonText}>
             🚀 Iniciar Jornada
