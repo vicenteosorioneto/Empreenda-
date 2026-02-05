@@ -272,6 +272,51 @@ const MainHubScreenNeon = ({ navigation }) => {
               </LinearGradient>
             </TouchableOpacity>
           </BounceView>
+
+          <BounceView trigger={false}>
+            <TouchableOpacity onPress={() => navigation.navigate('DesafioEmpreendedor')}>
+              <LinearGradient
+                colors={['#667eea', '#764ba2']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.dailyMissionCard}
+              >
+                <Text style={styles.dailyMissionEmoji}>⚡</Text>
+                <Text style={styles.dailyMissionText}>Empreendedor</Text>
+                <Text style={styles.dailyMissionXP}>+200 XP</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </BounceView>
+
+          <BounceView trigger={false}>
+            <TouchableOpacity onPress={() => navigation.navigate('InnovationWheel')}>
+              <LinearGradient
+                colors={['#4facfe', '#00f2fe']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.dailyMissionCard}
+              >
+                <Text style={styles.dailyMissionEmoji}>🎡</Text>
+                <Text style={styles.dailyMissionText}>Roda Inovação</Text>
+                <Text style={styles.dailyMissionXP}>+150 XP</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </BounceView>
+
+          <BounceView trigger={false}>
+            <TouchableOpacity onPress={() => navigation.navigate('QuizRapido')}>
+              <LinearGradient
+                colors={['#fa709a', '#fee140']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.dailyMissionCard}
+              >
+                <Text style={styles.dailyMissionEmoji}>⚡</Text>
+                <Text style={styles.dailyMissionText}>Quiz Rápido</Text>
+                <Text style={styles.dailyMissionXP}>+100 XP</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </BounceView>
         </ScrollView>
       </View>
 

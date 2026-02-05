@@ -24,6 +24,8 @@ import QuizGameScreen from './screens/QuizGameScreen';
 import IdeasScreen from './screens/IdeasScreen';
 import ChallengeScreen from './screens/ChallengeScreen';
 import DesafioEmpreendedorScreen from './minigames/DesafioEmpreendedor';
+import InnovationWheelGame from './minigames/InnovationWheelGame';
+import QuizRapido from './minigames/QuizRapido';
 
 const Stack = createStackNavigator();
 
@@ -69,6 +71,8 @@ export default function App() {
           <Stack.Screen name="Ideas" component={IdeasScreen} />
           <Stack.Screen name="Challenge" component={ChallengeScreen} />
           <Stack.Screen name="DesafioEmpreendedor" component={DesafioEmpreendedorScreen} />
+          <Stack.Screen name="InnovationWheel" component={InnovationWheelGame} />
+          <Stack.Screen name="QuizRapido" component={QuizRapido} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

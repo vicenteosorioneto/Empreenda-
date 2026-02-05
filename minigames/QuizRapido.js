@@ -120,18 +120,37 @@ const QuizRapido = ({ onComplete, navigation }) => {
   };
 
   const finalizarJogo = () => {
-    const porcentagem = (pontuacao / (perguntas.length * 10)) * 100;
+    const perguntasAtivas = modoAlternativo ? perguntasAlternativas : perguntas;
+    const porcentagem = (pontuacao / (perguntasAtivas.length * 10)) * 100;
     let xpGanho = Math.round(pontuacao * 2);
     
     Alert.alert(
       "Quiz Concluído! 🎉",
-      `Pontuação: ${pontuacao}/${perguntas.length * 10}\n` +
+      `Pontuação: ${pontuacao}/${perguntasAtivas.length * 10}\n` +
       `Acertos: ${porcentagem.toFixed(0)}%\n` +
       `XP Ganho: +${xpGanho}`,
       [
         {
-          text: "OK",
-          onPress: () => onComplete(xpGanho)
+          text: "Voltar ao Menu",
+          onPress: () => {
+            if (navigation) {
+              navigation.goBack();
+            }
+            if (onComplete) {
+              onComplete(xpGanho);
+            }
+          }
+        },
+        {
+          text: "Jogar Novamente",
+          onPress: () => {
+            setPerguntaAtual(0);
+            setPontuacao(0);
+            setRespostaSelecionada(null);
+            setTempo(15);
+            setJokenIniciado(false);
+            setModoAlternativo(false);
+          }
         }
       ]
     );
@@ -172,6 +191,12 @@ const QuizRapido = ({ onComplete, navigation }) => {
     <View style={styles.container}>
       {/* Header do Quiz */}
       <View style={styles.header}>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => navigation && navigation.goBack()}
+        >
+          <Text style={styles.backIcon}>←</Text>
+        </TouchableOpacity>
         <View style={styles.progresso}>
           <Text style={styles.progressoTexto}>
             {perguntaAtual + 1} / {perguntas.length}
