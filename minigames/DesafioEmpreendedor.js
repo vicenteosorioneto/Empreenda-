@@ -9,15 +9,22 @@ import {
   Alert,
   Dimensions
 } from 'react-native';
+import { getRandomQuestions } from '../data/quizQuestions';
 
 const { width } = Dimensions.get('window');
 
 const DesafioEmpreendedorScreen = ({ navigation }) => {
-  const [gameState, setGameState] = useState('menu'); // menu, playing, results
+  const [gameState, setGameState] = useState('menu'); // menu, playing, quiz, results
   const [currentScenario, setCurrentScenario] = useState(0);
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(60);
   const [playerChoices, setPlayerChoices] = useState([]);
+  
+  // Quiz mode states
+  const [quizMode, setQuizMode] = useState(false);
+  const [quizQuestions, setQuizQuestions] = useState([]);
+  const [currentQuizQuestion, setCurrentQuizQuestion] = useState(0);
+  const [quizScore, setQuizScore] = useState(0);
   
   // Animações
   const fadeAnim = new Animated.Value(1);
@@ -199,6 +206,52 @@ const DesafioEmpreendedorScreen = ({ navigation }) => {
     setScore(0);
     setTimeLeft(60);
     setPlayerChoices([]);
+    setQuizMode(false);
+  };
+
+  const startQuizMode = () => {
+    const questions = getRandomQuestions(5);
+    setQuizQuestions(questions);
+    setCurrentQuizQuestion(0);
+    setQuizScore(0);
+    setGameState('quiz');
+    setQuizMode(true);
+  };
+
+  const handleQuizAnswer = (selectedOption) => {
+    const currentQuestion = quizQuestions[currentQuizQuestion];
+    const isCorrect = selectedOption === currentQuestion.correctAnswer;
+    
+    if (isCorrect) {
+      setQuizScore(quizScore + 100);
+      Alert.alert('✅ Correto!', currentQuestion.explanation, [
+        {
+          text: 'Próxima',
+          onPress: () => {
+            if (currentQuizQuestion < quizQuestions.length - 1) {
+              setCurrentQuizQuestion(currentQuizQuestion + 1);
+            } else {
+              setGameState('results');
+              setScore(quizScore + 100);
+            }
+          }
+        }
+      ]);
+    } else {
+      Alert.alert('❌ Incorreto', currentQuestion.explanation, [
+        {
+          text: 'Próxima',
+          onPress: () => {
+            if (currentQuizQuestion < quizQuestions.length - 1) {
+              setCurrentQuizQuestion(currentQuizQuestion + 1);
+            } else {
+              setGameState('results');
+              setScore(quizScore);
+            }
+          }
+        }
+      ]);
+    }
   };
 
   const selectOption = (option) => {
@@ -299,6 +352,13 @@ const DesafioEmpreendedorScreen = ({ navigation }) => {
             <TouchableOpacity style={styles.startButton} onPress={startGame}>
               <Text style={styles.startButtonText}>🚀 Começar Desafio</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={[styles.startButton, { backgroundColor: '#8B5CF6', marginTop: 15 }]} 
+              onPress={startQuizMode}
+            >
+              <Text style={styles.startButtonText}>📝 Modo Quiz</Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.instructionsCard}>
@@ -308,10 +368,58 @@ const DesafioEmpreendedorScreen = ({ navigation }) => {
               • Escolha a melhor estratégia para cada cenário{'\n'}
               • Ganhe pontos baseados na qualidade das suas decisões{'\n'}
               • Aprenda com feedback personalizado{'\n'}
-              • Descubra seu nível empreendedor!
+              • Descubra seu nível empreendedor!{'\n'}
+              • Ou teste seus conhecimentos no Modo Quiz!
             </Text>
           </View>
         </ScrollView>
+      </View>
+    );
+  }
+
+  if (gameState === 'quiz') {
+    const question = quizQuestions[currentQuizQuestion];
+    
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity 
+            style={styles.backButton}
+            onPress={() => setGameState('menu')}
+          >
+            <Text style={styles.backIcon}>←</Text>
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>📝 Quiz Empreendedor</Text>
+          <View style={styles.placeholder} />
+        </View>
+
+        <View style={styles.content}>
+          <View style={styles.quizProgress}>
+            <Text style={styles.progressText}>
+              Pergunta {currentQuizQuestion + 1} de {quizQuestions.length}
+            </Text>
+            <Text style={styles.quizScoreText}>Pontuação: {quizScore}</Text>
+          </View>
+
+          <View style={styles.quizCard}>
+            <Text style={styles.quizQuestion}>{question.question}</Text>
+            
+            <View style={styles.quizOptionsContainer}>
+              {['a', 'b', 'c', 'd'].map((option) => (
+                <TouchableOpacity
+                  key={option}
+                  style={styles.quizOption}
+                  onPress={() => handleQuizAnswer(option)}
+                >
+                  <View style={styles.quizOptionHeader}>
+                    <Text style={styles.quizOptionLetter}>{option.toUpperCase()}</Text>
+                  </View>
+                  <Text style={styles.quizOptionText}>{question[option]}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        </View>
       </View>
     );
   }
@@ -765,6 +873,75 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  quizProgress: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    padding: 15,
+    borderRadius: 15,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  progressText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#374151',
+  },
+  quizScoreText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#8B5CF6',
+  },
+  quizCard: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.15,
+    shadowRadius: 15,
+    elevation: 8,
+  },
+  quizQuestion: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    marginBottom: 25,
+    lineHeight: 26,
+  },
+  quizOptionsContainer: {
+    gap: 15,
+  },
+  quizOption: {
+    backgroundColor: '#F9FAFB',
+    borderRadius: 15,
+    padding: 18,
+    borderWidth: 2,
+    borderColor: '#E5E7EB',
+  },
+  quizOptionHeader: {
+    marginBottom: 8,
+  },
+  quizOptionLetter: {
+    backgroundColor: '#8B5CF6',
+    color: 'white',
+    fontSize: 14,
+    fontWeight: 'bold',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+  },
+  quizOptionText: {
+    fontSize: 15,
+    color: '#374151',
+    lineHeight: 22,
   },
 });
 
