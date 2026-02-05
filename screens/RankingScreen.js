@@ -6,8 +6,8 @@ import {
   ScrollView, 
   TouchableOpacity,
   FlatList 
-} from 'react-native';
-
+} from 'react-native';import { LinearGradient } from 'expo-linear-gradient';
+import NavigationHeader from '../components/NavigationHeader';
 const RankingScreen = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('escola');
   

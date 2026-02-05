@@ -8,6 +8,8 @@ import {
   FlatList,
   Dimensions
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import NavigationHeader from '../components/NavigationHeader';
 import { getUserMedals } from '../utils/storage';
 import medals from '../data/medals';
 

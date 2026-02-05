@@ -8,6 +8,8 @@ import {
   Switch,
   Alert
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import NavigationHeader from '../components/NavigationHeader';
 import { 
   getSettings, 
   saveSettings, 
