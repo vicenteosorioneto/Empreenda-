@@ -11,21 +11,11 @@ import {
 import Logo from '../components/Logo';
 
 const LoginScreen = ({ navigation }) => {
-  const [email, setEmail] = useState('');
   const [codigoEscolar, setCodigoEscolar] = useState('');
-  const [selectedAvatar, setSelectedAvatar] = useState(null);
-
-  const avatars = [
-    { id: 1, emoji: '🦸‍♂️', name: 'Super Herói' },
-    { id: 2, emoji: '🧙‍♀️', name: 'Mago' },
-    { id: 3, emoji: '🥷', name: 'Ninja' },
-    { id: 4, emoji: '🚀', name: 'Astronauta' },
-    { id: 5, emoji: '🦁', name: 'Leão' },
-    { id: 6, emoji: '🦄', name: 'Unicórnio' },
-  ];
+  const [senha, setSenha] = useState('');
 
   const handleLogin = () => {
-    if (selectedAvatar) {
+    if (codigoEscolar && senha) {
       navigation.replace('MainHub');
     }
   };
@@ -41,19 +31,7 @@ const LoginScreen = ({ navigation }) => {
 
       <View style={styles.formContainer}>
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>📧 E-mail ou usuário</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Digite seu e-mail"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>🏫 Código da escola (opcional)</Text>
+          <Text style={styles.label}>🏫 Código da Escola</Text>
           <TextInput
             style={styles.input}
             placeholder="Ex: ESC2024"
@@ -63,32 +41,24 @@ const LoginScreen = ({ navigation }) => {
           />
         </View>
 
-        <View style={styles.avatarSection}>
-          <Text style={styles.label}>🎭 Escolha seu avatar</Text>
-          <View style={styles.avatarGrid}>
-            {avatars.map((avatar) => (
-              <TouchableOpacity
-                key={avatar.id}
-                style={[
-                  styles.avatarCard,
-                  selectedAvatar === avatar.id && styles.selectedAvatar
-                ]}
-                onPress={() => setSelectedAvatar(avatar.id)}
-              >
-                <Text style={styles.avatarEmoji}>{avatar.emoji}</Text>
-                <Text style={styles.avatarName}>{avatar.name}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>🔒 Senha</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite sua senha"
+            value={senha}
+            onChangeText={setSenha}
+            secureTextEntry={true}
+          />
         </View>
 
         <TouchableOpacity 
           style={[
             styles.loginButton,
-            !selectedAvatar && styles.loginButtonDisabled
+            (!codigoEscolar || !senha) && styles.loginButtonDisabled
           ]}
           onPress={handleLogin}
-          disabled={!selectedAvatar}
+          disabled={!codigoEscolar || !senha}
         >
           <Text style={styles.loginButtonText}>
             🚀 Iniciar Jornada
