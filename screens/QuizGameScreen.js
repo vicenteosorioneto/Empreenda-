@@ -6,7 +6,7 @@ import NavigationHeader from '../components/NavigationHeader';
 import { getRandomQuestions } from '../data/quizQuestions';
 
 const { width } = Dimensions.get('window');
-const TIMER_SECONDS = 30;
+const TIMER_SECONDS = 20;
 
 export default function QuizGameScreen({ navigation }) {
   const [questions, setQuestions] = useState([]);
