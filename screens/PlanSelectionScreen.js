@@ -14,7 +14,7 @@ import { UserSubscription } from '../types/onboarding';
 // 💎 SELEÇÃO DE PLANO - Paywall Suave
 
 const PlanSelectionScreen = ({ navigation }) => {
-  const [selectedPlan, setSelectedPlan] = useState<'FREE' | 'PREMIUM' | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState(null);
 
   const features = {
     free: [
@@ -35,10 +35,10 @@ const PlanSelectionScreen = ({ navigation }) => {
     ],
   };
 
-  const handlePlanSelect = async (plan: 'FREE' | 'PREMIUM') => {
+  const handlePlanSelect = async (plan) => {
     setSelectedPlan(plan);
 
-    const subscription: UserSubscription = {
+    const subscription = {
       plan,
       isTrialActive: plan === 'PREMIUM',
       trialStartDate: plan === 'PREMIUM' ? new Date().toISOString() : undefined,

@@ -15,7 +15,7 @@ import { UserProfile } from '../types/onboarding';
 
 const GameProfileScreen = ({ navigation }) => {
   const [step, setStep] = useState(1);
-  const [profile, setProfile] = useState<Partial<UserProfile>>({});
+  const [profile, setProfile] = useState({});
 
   const goals = [
     { id: 'learn', emoji: '📚', title: 'Aprender', description: 'Quero aprender sobre empreendedorismo' },
@@ -24,12 +24,12 @@ const GameProfileScreen = ({ navigation }) => {
     { id: 'grow', emoji: '📈', title: 'Crescer', description: 'Já tenho um negócio e quero crescer' },
   ];
 
-  const handleGoalSelect = (goal: string) => {
+  const handleGoalSelect = (goal) => {
     setProfile({ ...profile, goal });
     setStep(2);
   };
 
-  const handleIdeaSelect = (hasIdea: boolean) => {
+  const handleIdeaSelect = (hasIdea) => {
     setProfile({ ...profile, hasIdea });
     setStep(3);
   };
@@ -41,7 +41,7 @@ const GameProfileScreen = ({ navigation }) => {
     { id: 'passion', emoji: '❤️', title: 'Paixão', description: 'Fazer o que amo' },
   ];
 
-  const handleMotivationSelect = (motivation: string) => {
+  const handleMotivationSelect = (motivation) => {
     setProfile({ ...profile, motivation });
     setStep(4);
   };
@@ -53,11 +53,11 @@ const GameProfileScreen = ({ navigation }) => {
     { minutes: 30, emoji: '💪', title: '30+ minutos', description: 'Dedicação total' },
   ];
 
-  const handleTimeSelect = async (minutes: number) => {
-    const completeProfile: UserProfile = {
+  const handleTimeSelect = async (minutes) => {
+    const completeProfile = {
       ...profile,
       dailyMinutes: minutes,
-    } as UserProfile;
+    };
 
     // Salvar perfil
     await StorageService.saveUserProfile(completeProfile);

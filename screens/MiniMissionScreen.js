@@ -23,15 +23,15 @@ const MiniMissionScreen = ({ navigation }) => {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [correctAnswers, setCorrectAnswers] = useState(0);
-  const [mistakes, setMistakes] = useState<Mistake[]>([]);
+  const [mistakes, setMistakes] = useState([]);
   const [showMotivation, setShowMotivation] = useState(false);
   const [motivationMessage, setMotivationMessage] = useState('');
-  const [answersHistory, setAnswersHistory] = useState<boolean[]>([]);
+  const [answersHistory, setAnswersHistory] = useState([]);
 
   const progress = ((currentQuestion + 1) / initialMission.length) * 100;
   const mission = initialMission[currentQuestion];
 
-  const handleOptionSelect = (optionIndex: number) => {
+  const handleOptionSelect = (optionIndex) => {
     if (showFeedback) return;
     setSelectedOption(optionIndex);
   };
@@ -54,7 +54,7 @@ const MiniMissionScreen = ({ navigation }) => {
       }
     } else {
       // Registrar erro
-      const mistake: Mistake = {
+      const mistake = {
         questionId: mission.id,
         userAnswer: selectedOption,
         correctAnswer: mission.correctOption,
