@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet, Animated } from 'react-native';
 import Logo from '../components/Logo';
+import { Mascot } from '../components/Mascot';
 
 const SplashScreen = ({ navigation }) => {
   const fadeAnim = new Animated.Value(0);
@@ -22,9 +23,9 @@ const SplashScreen = ({ navigation }) => {
       }),
     ]).start();
 
-    // Navegar para a próxima tela após 3 segundos
+    // Navegar para Mini Missão após 3 segundos
     const timer = setTimeout(() => {
-      navigation.replace('UserTypeSelection');
+      navigation.replace('MiniMissionIntro');
     }, 3000);
 
     return () => clearTimeout(timer);
