@@ -13,7 +13,7 @@ import StorageService from '../services/StorageService';
 // 📝 REVISÃO DE ERROS - Sistema Educacional
 
 const MistakeReviewScreen = ({ navigation, route }) => {
-  const { mistakes } = route.params as { mistakes: Mistake[] };
+  const { mistakes } = route.params;
 
   const handleContinue = async () => {
     // Limpar erros após revisão
