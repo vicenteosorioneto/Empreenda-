@@ -20,7 +20,7 @@ import { Mistake } from '../types/onboarding';
 
 const MiniMissionScreen = ({ navigation }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  const [selectedOption, setSelectedOption] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [mistakes, setMistakes] = useState([]);
