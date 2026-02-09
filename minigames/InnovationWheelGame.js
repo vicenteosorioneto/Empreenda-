@@ -5,12 +5,15 @@ import {
   StyleSheet,
   TouchableOpacity,
   Animated,
+  Alert,
+  ScrollView,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { THEME } from '../utils/theme';
 import { MINIGAME_TYPES } from '../data/minigames';
 import { RotatingBadge, BounceView } from '../components/AnimationComponents';
 import { FeedbackOverlay, RewardCard } from '../components/FeedbackComponents';
+import { getRandomQuestions } from '../data/quizQuestions';
 
 /**
  * Mini-jogo: Roda da Inovação
@@ -25,6 +28,12 @@ const InnovationWheelGame = ({ navigation }) => {
   const [xpEarned, setXpEarned] = useState(0);
   const [feedback, setFeedback] = useState({ visible: false, message: '' });
   const [showReward, setShowReward] = useState(false);
+  
+  // Quiz mode states
+  const [quizMode, setQuizMode] = useState(false);
+  const [quizQuestions, setQuizQuestions] = useState([]);
+  const [currentQuizQuestion, setCurrentQuizQuestion] = useState(0);
+  const [quizScore, setQuizScore] = useState(0);
 
   const rotateAnimation = useRef(new Animated.Value(0)).current;
   const scaleAnimation = useRef(new Animated.Value(1)).current;
@@ -77,10 +86,101 @@ const InnovationWheelGame = ({ navigation }) => {
     });
   };
 
+  const startQuizMode = () => {
+    const questions = getRandomQuestions(5);
+    setQuizQuestions(questions);
+    setCurrentQuizQuestion(0);
+    setQuizScore(0);
+    setQuizMode(true);
+  };
+
+  const handleQuizAnswer = (selectedOption) => {
+    const currentQuestion = quizQuestions[currentQuizQuestion];
+    const isCorrect = selectedOption === currentQuestion.correctAnswer;
+    
+    if (isCorrect) {
+      setQuizScore(quizScore + 100);
+      Alert.alert('✅ Correto!', currentQuestion.explanation, [
+        {
+          text: 'Próxima',
+          onPress: () => {
+            if (currentQuizQuestion < quizQuestions.length - 1) {
+              setCurrentQuizQuestion(currentQuizQuestion + 1);
+            } else {
+              setQuizMode(false);
+              setXpEarned(quizScore + 100);
+              setShowReward(true);
+            }
+          }
+        }
+      ]);
+    } else {
+      Alert.alert('❌ Incorreto', currentQuestion.explanation, [
+        {
+          text: 'Próxima',
+          onPress: () => {
+            if (currentQuizQuestion < quizQuestions.length - 1) {
+              setCurrentQuizQuestion(currentQuizQuestion + 1);
+            } else {
+              setQuizMode(false);
+              setXpEarned(quizScore);
+              setShowReward(true);
+            }
+          }
+        }
+      ]);
+    }
+  };
+
   const spinValue = rotateAnimation.interpolate({
     inputRange: [0, 360],
     outputRange: ['0deg', '360deg'],
   });
+
+  if (quizMode) {
+    const question = quizQuestions[currentQuizQuestion];
+    
+    return (
+      <LinearGradient
+        colors={THEME.gradients.primary}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.container}
+      >
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => setQuizMode(false)}>
+            <Text style={styles.backButton}>← Voltar</Text>
+          </TouchableOpacity>
+          <Text style={styles.title}>📝 Quiz da Inovação</Text>
+          <Text style={styles.subTitle}>Pergunta {currentQuizQuestion + 1}/{quizQuestions.length}</Text>
+        </View>
+
+        <ScrollView style={styles.quizContainer}>
+          <View style={styles.quizCard}>
+            <Text style={styles.quizQuestion}>{question.question}</Text>
+            
+            <View style={styles.quizOptionsContainer}>
+              {['a', 'b', 'c', 'd'].map((option) => (
+                <TouchableOpacity
+                  key={option}
+                  style={styles.quizOption}
+                  onPress={() => handleQuizAnswer(option)}
+                >
+                  <Text style={styles.quizOptionLetter}>{option.toUpperCase()}</Text>
+                  <Text style={styles.quizOptionText}>{question[option]}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <View style={styles.quizScoreContainer}>
+              <Text style={styles.quizScoreLabel}>Pontuação:</Text>
+              <Text style={styles.quizScoreValue}>{quizScore}</Text>
+            </View>
+          </View>
+        </ScrollView>
+      </LinearGradient>
+    );
+  }
 
   return (
     <>
@@ -203,6 +303,21 @@ const InnovationWheelGame = ({ navigation }) => {
           <Text style={styles.spinButtonText}>
             {spinning ? '🌪️ Girando...' : '🎯 Girar Roda'}
           </Text>
+        </LinearGradient>
+      </TouchableOpacity>
+
+      {/* Quiz Button */}
+      <TouchableOpacity
+        style={styles.quizButton}
+        onPress={startQuizMode}
+      >
+        <LinearGradient
+          colors={['#8B5CF6', '#6D28D9']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.spinButtonGradient}
+        >
+          <Text style={styles.spinButtonText}>📝 Modo Quiz</Text>
         </LinearGradient>
       </TouchableOpacity>
 
@@ -404,6 +519,81 @@ const styles = StyleSheet.create({
     color: THEME.colors.textInverted,
     fontSize: THEME.fontSize.base,
     fontWeight: THEME.fontWeight.bold,
+  },
+
+  // Quiz Styles
+  quizButton: {
+    marginBottom: THEME.spacing.lg,
+    borderRadius: THEME.borderRadius.lg,
+    overflow: 'hidden',
+  },
+  quizContainer: {
+    flex: 1,
+    padding: THEME.spacing.lg,
+  },
+  quizCard: {
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    borderRadius: THEME.borderRadius.xl,
+    padding: THEME.spacing.xl,
+    marginBottom: THEME.spacing.lg,
+  },
+  quizQuestion: {
+    fontSize: THEME.fontSize.xl,
+    fontWeight: THEME.fontWeight.bold,
+    color: THEME.colors.text,
+    marginBottom: THEME.spacing.xl,
+    lineHeight: 28,
+  },
+  quizOptionsContainer: {
+    marginBottom: THEME.spacing.lg,
+  },
+  quizOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: THEME.colors.background,
+    borderRadius: THEME.borderRadius.lg,
+    padding: THEME.spacing.lg,
+    marginBottom: THEME.spacing.md,
+    borderWidth: 2,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
+  },
+  quizOptionLetter: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#8B5CF6',
+    color: 'white',
+    fontSize: THEME.fontSize.base,
+    fontWeight: THEME.fontWeight.bold,
+    textAlign: 'center',
+    lineHeight: 36,
+    marginRight: THEME.spacing.md,
+  },
+  quizOptionText: {
+    flex: 1,
+    fontSize: THEME.fontSize.base,
+    color: THEME.colors.text,
+    lineHeight: 22,
+  },
+  quizScoreContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: THEME.spacing.lg,
+    paddingTop: THEME.spacing.lg,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(139, 92, 246, 0.2)',
+  },
+  quizScoreLabel: {
+    fontSize: THEME.fontSize.lg,
+    fontWeight: THEME.fontWeight.semibold,
+    color: THEME.colors.text,
+    marginRight: THEME.spacing.sm,
+  },
+  quizScoreValue: {
+    fontSize: THEME.fontSize.xl,
+    fontWeight: THEME.fontWeight.bold,
+    color: '#8B5CF6',
   },
 });
 

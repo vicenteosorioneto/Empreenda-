@@ -5,15 +5,19 @@ import {
   StyleSheet, 
   TouchableOpacity, 
   Alert,
-  Animated 
+  Animated,
+  ScrollView
 } from 'react-native';
+import { getRandomQuestions } from '../data/quizQuestions';
 
-const QuizRapido = ({ onComplete }) => {
+const QuizRapido = ({ onComplete, navigation }) => {
   const [perguntaAtual, setPerguntaAtual] = useState(0);
   const [pontuacao, setPontuacao] = useState(0);
   const [respostaSelecionada, setRespostaSelecionada] = useState(null);
   const [tempo, setTempo] = useState(15);
   const [jokenIniciado, setJokenIniciado] = useState(false);
+  const [modoAlternativo, setModoAlternativo] = useState(false);
+  const [perguntasAlternativas, setPerguntasAlternativas] = useState([]);
 
   const perguntas = [
     {
@@ -75,6 +79,17 @@ const QuizRapido = ({ onComplete }) => {
   const iniciarJogo = () => {
     setJokenIniciado(true);
     setTempo(15);
+    setModoAlternativo(false);
+  };
+
+  const iniciarModoAlternativo = () => {
+    const questions = getRandomQuestions(10);
+    setPerguntasAlternativas(questions);
+    setModoAlternativo(true);
+    setJokenIniciado(true);
+    setPerguntaAtual(0);
+    setPontuacao(0);
+    setTempo(15);
   };
 
   const selecionarResposta = (index) => {
@@ -93,7 +108,9 @@ const QuizRapido = ({ onComplete }) => {
   };
 
   const handleProximaPergunta = () => {
-    if (perguntaAtual < perguntas.length - 1) {
+    const perguntasAtivas = modoAlternativo ? perguntasAlternativas : perguntas;
+    
+    if (perguntaAtual < perguntasAtivas.length - 1) {
       setPerguntaAtual(perguntaAtual + 1);
       setRespostaSelecionada(null);
       setTempo(15);
@@ -103,18 +120,37 @@ const QuizRapido = ({ onComplete }) => {
   };
 
   const finalizarJogo = () => {
-    const porcentagem = (pontuacao / (perguntas.length * 10)) * 100;
+    const perguntasAtivas = modoAlternativo ? perguntasAlternativas : perguntas;
+    const porcentagem = (pontuacao / (perguntasAtivas.length * 10)) * 100;
     let xpGanho = Math.round(pontuacao * 2);
     
     Alert.alert(
       "Quiz Concluído! 🎉",
-      `Pontuação: ${pontuacao}/${perguntas.length * 10}\n` +
+      `Pontuação: ${pontuacao}/${perguntasAtivas.length * 10}\n` +
       `Acertos: ${porcentagem.toFixed(0)}%\n` +
       `XP Ganho: +${xpGanho}`,
       [
         {
-          text: "OK",
-          onPress: () => onComplete(xpGanho)
+          text: "Voltar ao Menu",
+          onPress: () => {
+            if (navigation) {
+              navigation.goBack();
+            }
+            if (onComplete) {
+              onComplete(xpGanho);
+            }
+          }
+        },
+        {
+          text: "Jogar Novamente",
+          onPress: () => {
+            setPerguntaAtual(0);
+            setPontuacao(0);
+            setRespostaSelecionada(null);
+            setTempo(15);
+            setJokenIniciado(false);
+            setModoAlternativo(false);
+          }
         }
       ]
     );
@@ -137,17 +173,30 @@ const QuizRapido = ({ onComplete }) => {
           <TouchableOpacity style={styles.botaoIniciar} onPress={iniciarJogo}>
             <Text style={styles.textoBotao}>🚀 Começar Quiz</Text>
           </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.botaoIniciar, { backgroundColor: '#8B5CF6', marginTop: 15 }]} 
+            onPress={iniciarModoAlternativo}
+          >
+            <Text style={styles.textoBotao}>📚 Quiz Alternativo (10 perguntas)</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
   }
 
-  const pergunta = perguntas[perguntaAtual];
+  const perguntasAtivas = modoAlternativo ? perguntasAlternativas : perguntas;
+  const pergunta = perguntasAtivas[perguntaAtual];
 
   return (
     <View style={styles.container}>
       {/* Header do Quiz */}
       <View style={styles.header}>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => navigation && navigation.goBack()}
+        >
+          <Text style={styles.backIcon}>←</Text>
+        </TouchableOpacity>
         <View style={styles.progresso}>
           <Text style={styles.progressoTexto}>
             {perguntaAtual + 1} / {perguntas.length}
@@ -178,27 +227,48 @@ const QuizRapido = ({ onComplete }) => {
 
       {/* Pergunta */}
       <View style={styles.perguntaContainer}>
-        <Text style={styles.perguntaTexto}>{pergunta.pergunta}</Text>
+        <Text style={styles.perguntaTexto}>
+          {modoAlternativo ? pergunta.question : pergunta.pergunta}
+        </Text>
       </View>
 
       {/* Opções de Resposta */}
-      <View style={styles.opcoesContainer}>
-        {pergunta.opcoes.map((opcao, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.opcao,
-              respostaSelecionada !== null && index === pergunta.respostaCorreta && styles.opcaoCorreta,
-              respostaSelecionada === index && index !== pergunta.respostaCorreta && styles.opcaoIncorreta,
-              respostaSelecionada === index && index === pergunta.respostaCorreta && styles.opcaoCorreta,
-            ]}
-            onPress={() => selecionarResposta(index)}
-            disabled={respostaSelecionada !== null}
-          >
-            <Text style={styles.opcaoTexto}>{opcao}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <ScrollView style={styles.opcoesContainer}>
+        {modoAlternativo ? (
+          // Modo alternativo com opções a, b, c, d
+          ['a', 'b', 'c', 'd'].map((letra, index) => (
+            <TouchableOpacity
+              key={letra}
+              style={[
+                styles.opcao,
+                respostaSelecionada !== null && letra === pergunta.correctAnswer && styles.opcaoCorreta,
+                respostaSelecionada === index && letra !== pergunta.correctAnswer && styles.opcaoIncorreta,
+              ]}
+              onPress={() => selecionarResposta(index)}
+              disabled={respostaSelecionada !== null}
+            >
+              <Text style={styles.opcaoLetra}>{letra.toUpperCase()}</Text>
+              <Text style={styles.opcaoTexto}>{pergunta[letra]}</Text>
+            </TouchableOpacity>
+          ))
+        ) : (
+          // Modo tradicional com opcoes array
+          pergunta.opcoes.map((opcao, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.opcao,
+                respostaSelecionada !== null && index === pergunta.respostaCorreta && styles.opcaoCorreta,
+                respostaSelecionada === index && index !== pergunta.respostaCorreta && styles.opcaoIncorreta,
+              ]}
+              onPress={() => selecionarResposta(index)}
+              disabled={respostaSelecionada !== null}
+            >
+              <Text style={styles.opcaoTexto}>{opcao}</Text>
+            </TouchableOpacity>
+          ))
+        )}
+      </ScrollView>
 
       {/* Feedback */}
       {respostaSelecionada !== null && (
@@ -343,6 +413,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   opcao: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: 'white',
     borderRadius: 15,
     padding: 20,
@@ -362,6 +434,18 @@ const styles = StyleSheet.create({
   opcaoIncorreta: {
     backgroundColor: '#FEF2F2',
     borderColor: '#EF4444',
+  },
+  opcaoLetra: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#8B5CF6',
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    lineHeight: 36,
+    marginRight: 12,
   },
   opcaoTexto: {
     fontSize: 16,

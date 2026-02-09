@@ -8,6 +8,8 @@ import {
   FlatList,
   Dimensions
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import NavigationHeader from '../components/NavigationHeader';
 import { getUserMedals } from '../utils/storage';
 import medals from '../data/medals';
 
@@ -130,7 +132,7 @@ const ConquistasScreen = ({ navigation }) => {
             { backgroundColor: getBadgeColor(conquista.tipo) }
           ]}>
             <Text style={styles.tipoBadgeText}>
-              {conquista.tipo.toUpperCase()}
+              {conquista.tipo ? conquista.tipo.toUpperCase() : 'TIPO'}
             </Text>
           </View>
           
@@ -139,7 +141,7 @@ const ConquistasScreen = ({ navigation }) => {
             { backgroundColor: getRarityColor(conquista.raridade) }
           ]}>
             <Text style={styles.raridadeBadgeText}>
-              {conquista.raridade.toUpperCase()}
+              {conquista.raridade ? conquista.raridade.toUpperCase() : 'COMUM'}
             </Text>
           </View>
         </View>

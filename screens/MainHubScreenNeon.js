@@ -214,31 +214,10 @@ const MainHubScreenNeon = ({ navigation }) => {
         </View>
       </LinearGradient>
 
-      {/* Stats Rápidas */}
-      <View style={styles.statsGrid}>
-        <PulsingCard color={THEME.colors.neonGreen} style={styles.statCard}>
-          <Text style={styles.statEmoji}>📊</Text>
-          <Text style={styles.statLabel}>Trilhas</Text>
-          <Text style={styles.statValue}>{trilhas.filter(t => t.completed).length}</Text>
-        </PulsingCard>
-
-        <PulsingCard color={THEME.colors.neonCyan} style={styles.statCard}>
-          <Text style={styles.statEmoji}>🏆</Text>
-          <Text style={styles.statLabel}>Ranking</Text>
-          <Text style={styles.statValue}>12º</Text>
-        </PulsingCard>
-
-        <PulsingCard color={THEME.colors.neonPurple} style={styles.statCard}>
-          <Text style={styles.statEmoji}>🎖️</Text>
-          <Text style={styles.statLabel}>Badges</Text>
-          <Text style={styles.statValue}>8</Text>
-        </PulsingCard>
-      </View>
-
       {/* Seção de Missões Diárias */}
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>📅 Missões Diárias</Text>
+          <Text style={styles.sectionTitle}>📅 Atividades</Text>
           <TouchableOpacity style={styles.sectionButton}>
             <Text style={styles.sectionButtonText}>Ver Tudo →</Text>
           </TouchableOpacity>
@@ -249,22 +228,95 @@ const MainHubScreenNeon = ({ navigation }) => {
           showsHorizontalScrollIndicator={false}
           style={styles.dailyMissionsScroll}
         >
-          {['🧠', '💡', '🎯'].map((emoji, i) => (
-            <BounceView key={i} trigger={false}>
+          <BounceView trigger={false}>
+            <TouchableOpacity onPress={() => navigation.navigate('QuizGame')}>
               <LinearGradient
                 colors={[THEME.colors.neonBlue, THEME.colors.neonPurple]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.dailyMissionCard}
               >
-                <Text style={styles.dailyMissionEmoji}>{emoji}</Text>
-                <Text style={styles.dailyMissionText}>
-                  {i === 0 ? 'Quiz' : i === 1 ? 'Ideia' : 'Desafio'}
-                </Text>
-                <Text style={styles.dailyMissionXP}>+50 XP</Text>
+                <Text style={styles.dailyMissionEmoji}>🧠</Text>
+                <Text style={styles.dailyMissionText}>Quiz</Text>
+                <Text style={styles.dailyMissionXP}>+150 XP</Text>
               </LinearGradient>
-            </BounceView>
-          ))}
+            </TouchableOpacity>
+          </BounceView>
+          
+          <BounceView trigger={false}>
+            <TouchableOpacity onPress={() => navigation.navigate('Ideas')}>
+              <LinearGradient
+                colors={['#f093fb', '#f5576c']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.dailyMissionCard}
+              >
+                <Text style={styles.dailyMissionEmoji}>💡</Text>
+                <Text style={styles.dailyMissionText}>Ideias</Text>
+                <Text style={styles.dailyMissionXP}>Criar</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </BounceView>
+          
+          <BounceView trigger={false}>
+            <TouchableOpacity onPress={() => navigation.navigate('Challenge')}>
+              <LinearGradient
+                colors={['#43e97b', '#38f9d7']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.dailyMissionCard}
+              >
+                <Text style={styles.dailyMissionEmoji}>🎯</Text>
+                <Text style={styles.dailyMissionText}>Desafio</Text>
+                <Text style={styles.dailyMissionXP}>15 min</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </BounceView>
+
+          <BounceView trigger={false}>
+            <TouchableOpacity onPress={() => navigation.navigate('DesafioEmpreendedor')}>
+              <LinearGradient
+                colors={['#667eea', '#764ba2']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.dailyMissionCard}
+              >
+                <Text style={styles.dailyMissionEmoji}>⚡</Text>
+                <Text style={styles.dailyMissionText}>Empreendedor</Text>
+                <Text style={styles.dailyMissionXP}>+200 XP</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </BounceView>
+
+          <BounceView trigger={false}>
+            <TouchableOpacity onPress={() => navigation.navigate('InnovationWheel')}>
+              <LinearGradient
+                colors={['#4facfe', '#00f2fe']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.dailyMissionCard}
+              >
+                <Text style={styles.dailyMissionEmoji}>🎡</Text>
+                <Text style={styles.dailyMissionText}>Roda Inovação</Text>
+                <Text style={styles.dailyMissionXP}>+150 XP</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </BounceView>
+
+          <BounceView trigger={false}>
+            <TouchableOpacity onPress={() => navigation.navigate('QuizRapido')}>
+              <LinearGradient
+                colors={['#fa709a', '#fee140']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.dailyMissionCard}
+              >
+                <Text style={styles.dailyMissionEmoji}>⚡</Text>
+                <Text style={styles.dailyMissionText}>Quiz Rápido</Text>
+                <Text style={styles.dailyMissionXP}>+100 XP</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </BounceView>
         </ScrollView>
       </View>
 

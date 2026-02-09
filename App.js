@@ -6,6 +6,9 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 // Import das telas
 import SplashScreen from './screens/SplashScreen';
+import UserTypeSelectionScreen from './screens/UserTypeSelectionScreen';
+import CharacterSelectionScreen from './screens/CharacterSelectionScreen';
+import ClassAndSchoolSelectionScreen from './screens/ClassAndSchoolSelectionScreen';
 import OnboardingScreen from './screens/OnboardingScreen';
 import LoginScreen from './screens/LoginScreen';
 import MainHubScreen from './screens/MainHubScreen';
@@ -13,10 +16,16 @@ import MainHubScreenNeon from './screens/MainHubScreenNeon';
 import MissionScreen from './screens/MissionScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import RankingScreen from './screens/RankingScreen';
+import RankingScreenNew from './screens/RankingScreenNew';
 import ImpactScreen from './screens/ImpactScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import ConquistasScreen from './screens/ConquistasScreen';
+import QuizGameScreen from './screens/QuizGameScreen';
+import IdeasScreen from './screens/IdeasScreen';
+import ChallengeScreen from './screens/ChallengeScreen';
 import DesafioEmpreendedorScreen from './minigames/DesafioEmpreendedor';
+import InnovationWheelGame from './minigames/InnovationWheelGame';
+import QuizRapido from './minigames/QuizRapido';
 
 const Stack = createStackNavigator();
 
@@ -46,16 +55,24 @@ export default function App() {
           }}
         >
           <Stack.Screen name="Splash" component={SplashScreen} />
+          <Stack.Screen name="UserTypeSelection" component={UserTypeSelectionScreen} />
+          <Stack.Screen name="CharacterSelection" component={CharacterSelectionScreen} />
+          <Stack.Screen name="ClassAndSchoolSelection" component={ClassAndSchoolSelectionScreen} />
           <Stack.Screen name="Onboarding" component={OnboardingScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="MainHub" component={MainHubScreenNeon} />
           <Stack.Screen name="Mission" component={MissionScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
-          <Stack.Screen name="Ranking" component={RankingScreen} />
+          <Stack.Screen name="Ranking" component={RankingScreenNew} />
           <Stack.Screen name="Impact" component={ImpactScreen} />
           <Stack.Screen name="Settings" component={SettingsScreen} />
           <Stack.Screen name="Conquistas" component={ConquistasScreen} />
+          <Stack.Screen name="QuizGame" component={QuizGameScreen} />
+          <Stack.Screen name="Ideas" component={IdeasScreen} />
+          <Stack.Screen name="Challenge" component={ChallengeScreen} />
           <Stack.Screen name="DesafioEmpreendedor" component={DesafioEmpreendedorScreen} />
+          <Stack.Screen name="InnovationWheel" component={InnovationWheelGame} />
+          <Stack.Screen name="QuizRapido" component={QuizRapido} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

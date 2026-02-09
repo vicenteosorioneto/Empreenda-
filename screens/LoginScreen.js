@@ -8,24 +8,15 @@ import {
   ScrollView,
   Image 
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import Logo from '../components/Logo';
 
 const LoginScreen = ({ navigation }) => {
-  const [email, setEmail] = useState('');
   const [codigoEscolar, setCodigoEscolar] = useState('');
-  const [selectedAvatar, setSelectedAvatar] = useState(null);
-
-  const avatars = [
-    { id: 1, emoji: '🦸‍♂️', name: 'Super Herói' },
-    { id: 2, emoji: '🧙‍♀️', name: 'Mago' },
-    { id: 3, emoji: '🥷', name: 'Ninja' },
-    { id: 4, emoji: '🚀', name: 'Astronauta' },
-    { id: 5, emoji: '🦁', name: 'Leão' },
-    { id: 6, emoji: '🦄', name: 'Unicórnio' },
-  ];
+  const [email, setEmail] = useState('');
 
   const handleLogin = () => {
-    if (selectedAvatar) {
+    if (codigoEscolar && email) {
       navigation.replace('MainHub');
     }
   };
@@ -33,6 +24,12 @@ const LoginScreen = ({ navigation }) => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Ionicons name="arrow-back" size={24} color="#fff" />
+        </TouchableOpacity>
         <Logo size="medium" showText={true} />
         <Text style={styles.welcomeText}>
           Bem-vindo(a) à aventura empreendedora! 🌟
@@ -41,7 +38,18 @@ const LoginScreen = ({ navigation }) => {
 
       <View style={styles.formContainer}>
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>📧 E-mail ou usuário</Text>
+          <Text style={styles.label}>🏫 Código da Escola</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Ex: ESC2024"
+            value={codigoEscolar}
+            onChangeText={setCodigoEscolar}
+            autoCapitalize="characters"
+          />
+        </View>
+
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>� E-mail</Text>
           <TextInput
             style={styles.input}
             placeholder="Digite seu e-mail"
@@ -52,43 +60,13 @@ const LoginScreen = ({ navigation }) => {
           />
         </View>
 
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>🏫 Código da escola (opcional)</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Ex: ESC2024"
-            value={codigoEscolar}
-            onChangeText={setCodigoEscolar}
-            autoCapitalize="characters"
-          />
-        </View>
-
-        <View style={styles.avatarSection}>
-          <Text style={styles.label}>🎭 Escolha seu avatar</Text>
-          <View style={styles.avatarGrid}>
-            {avatars.map((avatar) => (
-              <TouchableOpacity
-                key={avatar.id}
-                style={[
-                  styles.avatarCard,
-                  selectedAvatar === avatar.id && styles.selectedAvatar
-                ]}
-                onPress={() => setSelectedAvatar(avatar.id)}
-              >
-                <Text style={styles.avatarEmoji}>{avatar.emoji}</Text>
-                <Text style={styles.avatarName}>{avatar.name}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-
         <TouchableOpacity 
           style={[
             styles.loginButton,
-            !selectedAvatar && styles.loginButtonDisabled
+            (!codigoEscolar || !email) && styles.loginButtonDisabled
           ]}
           onPress={handleLogin}
-          disabled={!selectedAvatar}
+          disabled={!codigoEscolar || !email}
         >
           <Text style={styles.loginButtonText}>
             🚀 Iniciar Jornada

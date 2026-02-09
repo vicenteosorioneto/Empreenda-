@@ -24,7 +24,7 @@ const SplashScreen = ({ navigation }) => {
 
     // Navegar para a próxima tela após 3 segundos
     const timer = setTimeout(() => {
-      navigation.replace('Onboarding');
+      navigation.replace('UserTypeSelection');
     }, 3000);
 
     return () => clearTimeout(timer);

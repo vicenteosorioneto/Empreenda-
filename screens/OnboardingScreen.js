@@ -9,6 +9,7 @@ import {
   Animated
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 
 const { width, height } = Dimensions.get('window');
 
@@ -139,6 +140,15 @@ const OnboardingScreen = ({ navigation }) => {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
+        {currentStep > 0 && (
+          <TouchableOpacity 
+            style={styles.backButtonHeader}
+            onPress={prevStep}
+          >
+            <Ionicons name="arrow-back" size={24} color="#fff" />
+          </TouchableOpacity>
+        )}
+        
         <TouchableOpacity 
           style={styles.skipButton}
           onPress={skipOnboarding}
@@ -248,8 +258,13 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     paddingBottom: 20,
   },
+  backButtonHeader: {
+    padding: 10,
+    marginRight: 'auto',
+  },
   skipButton: {
     padding: 10,
+    marginLeft: 'auto',
   },
   skipText: {
     fontSize: 16,

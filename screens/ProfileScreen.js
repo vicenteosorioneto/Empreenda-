@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   Image 
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import NavigationHeader from '../components/NavigationHeader';
 import { XPBar, MedalhaComponent } from '../components/Gamification';
 import { 
   getUserStats, 
@@ -90,23 +92,22 @@ const ProfileScreen = ({ navigation }) => {
   }
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity 
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.backIcon}>←</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Meu Perfil</Text>
-        <TouchableOpacity style={styles.editButton}>
-          <Text style={styles.editIcon}>✏️</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Perfil do Usuário */}
-      <View style={styles.profileCard}>
+    <LinearGradient
+      colors={['#1a1a2e', '#16213e', '#0f3460']}
+      style={styles.container}
+    >
+      <NavigationHeader 
+        title="Meu Perfil" 
+        rightComponent={
+          <TouchableOpacity style={styles.editButton}>
+            <Text style={styles.editIcon}>✏️</Text>
+          </TouchableOpacity>
+        }
+      />
+      
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Perfil do Usuário */}
+        <View style={styles.profileCard}>
         <View style={styles.avatarContainer}>
           <View style={styles.avatarCircle}>
             <Text style={styles.avatarEmoji}>{userProfile.avatar}</Text>
@@ -258,14 +259,14 @@ const ProfileScreen = ({ navigation }) => {
           <Text style={styles.actionArrow}>→</Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F0F9FF',
   },
   header: {
     flexDirection: 'row',
