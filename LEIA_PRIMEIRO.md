@@ -308,7 +308,6 @@ Sistema criado com ❤️ para:
 - **Engajamento ético**
 - **Educação real**
 - **Crescimento sustentável**
-- **Vício POSITIVO**
 
 ---
 
