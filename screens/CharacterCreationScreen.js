@@ -17,8 +17,8 @@ import RPGEngine from '../services/RPGEngine';
 
 const CharacterCreationScreen = ({ navigation }) => {
   const [name, setName] = useState('');
-  const [selectedClass, setSelectedClass] = useState<CharacterClass | null>(null);
-  const [step, setStep] = useState<'name' | 'class'>('name');
+  const [selectedClass, setSelectedClass] = useState(null);
+  const [step, setStep] = useState('name');
 
   const handleNameSubmit = () => {
     if (name.trim().length < 3) {
@@ -28,7 +28,7 @@ const CharacterCreationScreen = ({ navigation }) => {
     setStep('class');
   };
 
-  const handleClassSelect = async (classId: CharacterClass) => {
+  const handleClassSelect = async (classId) => {
     setSelectedClass(classId);
     
     // Pequeno delay para feedback visual
