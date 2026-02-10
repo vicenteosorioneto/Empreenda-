@@ -6,6 +6,15 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 // Import das telas
 import SplashScreen from './screens/SplashScreen';
+// Onboarding Gamificado
+import MiniMissionIntroScreen from './screens/MiniMissionIntroScreen';
+import MiniMissionScreen from './screens/MiniMissionScreen';
+import MissionResultScreen from './screens/MissionResultScreen';
+import MistakeReviewScreen from './screens/MistakeReviewScreen';
+import GameProfileScreen from './screens/GameProfileScreen';
+import DailyGoalScreen from './screens/DailyGoalScreen';
+import PlanSelectionScreen from './screens/PlanSelectionScreen';
+// Telas principais
 import UserTypeSelectionScreen from './screens/UserTypeSelectionScreen';
 import CharacterSelectionScreen from './screens/CharacterSelectionScreen';
 import ClassAndSchoolSelectionScreen from './screens/ClassAndSchoolSelectionScreen';
@@ -59,7 +68,17 @@ export default function App() {
             },
           }}
         >
+          {/* Onboarding Gamificado */}
           <Stack.Screen name="Splash" component={SplashScreen} />
+          <Stack.Screen name="MiniMissionIntro" component={MiniMissionIntroScreen} />
+          <Stack.Screen name="MiniMission" component={MiniMissionScreen} />
+          <Stack.Screen name="MissionResult" component={MissionResultScreen} />
+          <Stack.Screen name="MistakeReview" component={MistakeReviewScreen} />
+          <Stack.Screen name="GameProfile" component={GameProfileScreen} />
+          <Stack.Screen name="DailyGoal" component={DailyGoalScreen} />
+          <Stack.Screen name="PlanSelection" component={PlanSelectionScreen} />
+          
+          {/* Fluxo Principal */}
           <Stack.Screen name="UserTypeSelection" component={UserTypeSelectionScreen} />
           <Stack.Screen name="CharacterSelection" component={CharacterSelectionScreen} />
           <Stack.Screen name="ClassAndSchoolSelection" component={ClassAndSchoolSelectionScreen} />
