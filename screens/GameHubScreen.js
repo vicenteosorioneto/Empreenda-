@@ -25,9 +25,18 @@ const GameHubScreen = ({ navigation }) => {
   const loadGameProgress = async () => {
     try {
       const rpgProgress = await RPGEngine.loadProgress();
+      
+      // Se não existe progresso ou personagem, ir para criação
+      if (!rpgProgress || !rpgProgress.character) {
+        navigation.replace('CharacterCreation');
+        return;
+      }
+      
       setProgress(rpgProgress);
     } catch (error) {
       console.error('Erro ao carregar progresso:', error);
+      // Em caso de erro, ir para criação de personagem
+      navigation.replace('CharacterCreation');
     } finally {
       setLoading(false);
     }
@@ -45,7 +54,7 @@ const GameHubScreen = ({ navigation }) => {
     navigation.navigate('SkillTree');
   };
 
-  if (loading || !progress) {
+  if (loading || !progress || !progress.character) {
     return (
       <LinearGradient colors={['#0F172A', '#1E293B']} style={styles.container}>
         <Text style={styles.loadingText}>Carregando...</Text>
