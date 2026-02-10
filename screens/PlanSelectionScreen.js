@@ -59,12 +59,9 @@ const PlanSelectionScreen = ({ navigation }) => {
       });
     }
 
-    // Navegar para o app principal
+    // Navegar para seleção de modo
     setTimeout(() => {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'UserTypeSelection' }],
-      });
+      navigation.navigate('ModeSelection');
     }, 1500);
   };
 

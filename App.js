@@ -14,6 +14,7 @@ import MistakeReviewScreen from './screens/MistakeReviewScreen';
 import GameProfileScreen from './screens/GameProfileScreen';
 import DailyGoalScreen from './screens/DailyGoalScreen';
 import PlanSelectionScreen from './screens/PlanSelectionScreen';
+import ModeSelectionScreen from './screens/ModeSelectionScreen';
 // Telas principais
 import UserTypeSelectionScreen from './screens/UserTypeSelectionScreen';
 import CharacterSelectionScreen from './screens/CharacterSelectionScreen';
@@ -77,6 +78,7 @@ export default function App() {
           <Stack.Screen name="GameProfile" component={GameProfileScreen} />
           <Stack.Screen name="DailyGoal" component={DailyGoalScreen} />
           <Stack.Screen name="PlanSelection" component={PlanSelectionScreen} />
+          <Stack.Screen name="ModeSelection" component={ModeSelectionScreen} />
           
           {/* Fluxo Principal */}
           <Stack.Screen name="UserTypeSelection" component={UserTypeSelectionScreen} />
