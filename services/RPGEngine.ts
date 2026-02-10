@@ -14,6 +14,8 @@ import {
   SkillTree,
 } from '../types/rpg';
 import { GameStats, Energy } from '../types/game';
+import { getInitialSkillTree, CLASSES_INFO } from '../data/skillsData';
+import { initializeNPCs } from '../data/npcsData';
 
 // 🎮 RPG ENGINE - Motor Central do Jogo RPG
 
@@ -27,7 +29,7 @@ class RPGEngine {
     name: string,
     characterClass: CharacterClass
   ): Promise<RPGProgress> {
-    const classInfo = this.getClassInfo(characterClass);
+    const classInfo = CLASSES_INFO[characterClass];
 
     const initialProgress: RPGProgress = {
       character: {
@@ -47,7 +49,7 @@ class RPGEngine {
           totalXP: 0,
           skillPoints: 3, // Começa com 3 pontos
         },
-        skills: {}, // Inicialmente vazio
+        skills: getInitialSkillTree(characterClass), // Inicializa com skill tree
       },
       economy: {
         money: 1000, // R$ inicial
@@ -67,7 +69,7 @@ class RPGEngine {
       unlockedAreas: ['IDEATION'],
       quests: {},
       completedQuests: [],
-      npcs: {},
+      npcs: initializeNPCs(), // Inicializa NPCs com diálogos
       stats: {
         cash: 50,
         customerInterest: 30,
@@ -134,7 +136,7 @@ class RPGEngine {
 
   private applyLevelUpBonuses(progress: RPGProgress): void {
     // Aumentar atributos baseado na classe
-    const classInfo = this.getClassInfo(progress.character.class);
+    const classInfo = CLASSES_INFO[progress.character.class];
     const attrs = progress.character.attributes;
 
     attrs.vision = Math.min(100, attrs.vision + Math.floor(classInfo.bonuses.vision / 2));
@@ -321,24 +323,6 @@ class RPGEngine {
   }
 
   // ==================== HELPERS ====================
-
-  getClassInfo(characterClass: CharacterClass) {
-    const classes = {
-      VISIONARY: {
-        bonuses: { vision: 20, management: 5, marketing: 10, finance: 0, leadership: 10 },
-      },
-      STRATEGIST: {
-        bonuses: { vision: 10, management: 20, marketing: 5, finance: 15, leadership: 5 },
-      },
-      EXECUTOR: {
-        bonuses: { vision: 5, management: 15, marketing: 10, finance: 10, leadership: 15 },
-      },
-      INNOVATOR: {
-        bonuses: { vision: 15, management: 5, marketing: 15, finance: 5, leadership: 10 },
-      },
-    };
-    return classes[characterClass];
-  }
 
   mapClassToFounderProfile(characterClass: CharacterClass) {
     const map = {
