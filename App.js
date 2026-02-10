@@ -27,6 +27,11 @@ import DesafioEmpreendedorScreen from './minigames/DesafioEmpreendedor';
 import InnovationWheelGame from './minigames/InnovationWheelGame';
 import QuizRapido from './minigames/QuizRapido';
 
+// Import das telas RPG
+import GameHubScreen from './screens/GameHubScreen';
+import RPGMissionScreen from './screens/RPGMissionScreen';
+import MissionCompleteScreen from './screens/MissionCompleteScreen';
+
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -73,6 +78,11 @@ export default function App() {
           <Stack.Screen name="DesafioEmpreendedor" component={DesafioEmpreendedorScreen} />
           <Stack.Screen name="InnovationWheel" component={InnovationWheelGame} />
           <Stack.Screen name="QuizRapido" component={QuizRapido} />
+          
+          {/* Telas do Sistema RPG */}
+          <Stack.Screen name="GameHub" component={GameHubScreen} />
+          <Stack.Screen name="RPGMission" component={RPGMissionScreen} />
+          <Stack.Screen name="MissionComplete" component={MissionCompleteScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
