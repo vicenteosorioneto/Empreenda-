@@ -41,6 +41,8 @@ import QuizRapido from './minigames/QuizRapido';
 import GameHubScreen from './screens/GameHubScreen';
 import RPGMissionScreen from './screens/RPGMissionScreen';
 import MissionCompleteScreen from './screens/MissionCompleteScreen';
+import CharacterCreationScreen from './screens/CharacterCreationScreen';
+import SkillTreeScreen from './screens/SkillTreeScreen';
 
 const Stack = createStackNavigator();
 
@@ -101,7 +103,9 @@ export default function App() {
           <Stack.Screen name="QuizRapido" component={QuizRapido} />
           
           {/* Telas do Sistema RPG */}
+          <Stack.Screen name="CharacterCreation" component={CharacterCreationScreen} />
           <Stack.Screen name="GameHub" component={GameHubScreen} />
+          <Stack.Screen name="SkillTree" component={SkillTreeScreen} />
           <Stack.Screen name="RPGMission" component={RPGMissionScreen} />
           <Stack.Screen name="MissionComplete" component={MissionCompleteScreen} />
         </Stack.Navigator>

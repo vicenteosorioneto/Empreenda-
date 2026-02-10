@@ -28,7 +28,7 @@ const ModeSelectionScreen = ({ navigation }) => {
       if (mode === 'quiz') {
         navigation.replace('UserTypeSelection');
       } else {
-        navigation.replace('GameHub');
+        navigation.replace('CharacterCreation');
       }
     }, 300);
   };

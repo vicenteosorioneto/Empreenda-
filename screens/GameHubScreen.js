@@ -9,8 +9,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Mascot } from '../components/Mascot';
-import GameManager from '../services/GameManager';
-import { GameProgress } from '../types/game';
+import RPGEngine from '../services/RPGEngine';
 import { getMissionById } from '../data/rpgMissions';
 
 // 🎮 HUB DO JOGO RPG - Tela Principal
@@ -25,11 +24,8 @@ const GameHubScreen = ({ navigation }) => {
 
   const loadGameProgress = async () => {
     try {
-      // Recarregar energia se necessário
-      await GameManager.rechargeEnergy();
-      
-      const gameProgress = await GameManager.loadProgress();
-      setProgress(gameProgress);
+      const rpgProgress = await RPGEngine.loadProgress();
+      setProgress(rpgProgress);
     } catch (error) {
       console.error('Erro ao carregar progresso:', error);
     } finally {
@@ -38,17 +34,15 @@ const GameHubScreen = ({ navigation }) => {
   };
 
   const handleStartMission = () => {
-    if (!progress) return;
-
-    const currentMission = getMissionById(progress.currentMissionId);
-    if (!currentMission) return;
-
-    if (GameManager.canStartMission(progress.energy, currentMission.energyCost)) {
-      navigation.navigate('Mission', { missionId: currentMission.id });
-    } else {
-      // Mostrar alerta de energia insuficiente
-      alert('⚡ Energia insuficiente! Volte amanhã para recarregar.');
+    if (!progress || progress.energy <= 0) {
+      alert('⚡ Energia insuficiente! Complete missões para ganhar XP.');
+      return;
     }
+    navigation.navigate('Mission', { missionId: 'mission_1' });
+  };
+
+  const handleOpenSkills = () => {
+    navigation.navigate('SkillTree');
   };
 
   if (loading || !progress) {
@@ -59,167 +53,164 @@ const GameHubScreen = ({ navigation }) => {
     );
   }
 
-  const currentMission = getMissionById(progress.currentMissionId);
-  const titleName = GameManager.getTitleName(progress.currentTitle);
-
   return (
     <LinearGradient colors={['#0F172A', '#1E293B', '#334155']} style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Header com energia e título */}
+        {/* Header com nível e XP */}
         <View style={styles.header}>
-          <View style={styles.energyContainer}>
-            <Text style={styles.energyLabel}>⚡ Energia</Text>
-            <View style={styles.energyBar}>
+          <View style={styles.levelContainer}>
+            <Text style={styles.levelLabel}>🎓 Nível {progress.levels.currentLevel}</Text>
+            <View style={styles.xpBar}>
               <View 
                 style={[
-                  styles.energyFill,
-                  { width: `${(progress.energy.current / progress.energy.max) * 100}%` }
+                  styles.xpFill,
+                  { width: `${(progress.levels.currentXP / progress.levels.xpForNextLevel) * 100}%` }
                 ]}
               />
             </View>
-            <Text style={styles.energyText}>
-              {progress.energy.current}/{progress.energy.max}
+            <Text style={styles.xpText}>
+              {progress.levels.currentXP}/{progress.levels.xpForNextLevel} XP
             </Text>
           </View>
 
-          <View style={styles.titleContainer}>
-            <Text style={styles.titleLabel}>🏆 Título</Text>
-            <Text style={styles.titleText}>{titleName}</Text>
+          <View style={styles.skillPointsContainer}>
+            <Text style={styles.skillPointsLabel}>💎 {progress.levels.skillPoints}</Text>
+            <Text style={styles.skillPointsSubtext}>Pontos</Text>
           </View>
+        </View>
+
+        {/* Informações do Personagem */}
+        <View style={styles.characterCard}>
+          <Text style={styles.characterName}>{progress.character.name}</Text>
+          <Text style={styles.characterClass}>
+            {progress.character.class === 'VISIONARY' && '🔮 Visionário'}
+            {progress.character.class === 'STRATEGIST' && '♟️ Estrategista'}
+            {progress.character.class === 'EXECUTOR' && '⚡ Executor'}
+            {progress.character.class === 'INNOVATOR' && '💡 Inovador'}
+          </Text>
+          
+          <TouchableOpacity style={styles.skillsButton} onPress={handleOpenSkills}>
+            <Text style={styles.skillsButtonText}>🌳 Habilidades</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Mascote */}
         <View style={styles.mascotContainer}>
           <Mascot
             size="medium"
-            message={`Bem-vindo de volta, ${titleName}! Pronto para continuar sua jornada?`}
+            message={`Olá ${progress.character.name}! Sua empresa está em ${progress.economy.money > 1000 ? 'ótima forma' : 'desenvolvimento'}. Continue assim!`}
             animated={true}
           />
         </View>
 
-        {/* Status do jogo - Barras */}
-        <View style={styles.statsContainer}>
-          <Text style={styles.statsTitle}>📊 Status da sua Startup</Text>
+        {/* Economia e Status */}
+        <View style={styles.economyContainer}>
+          <Text style={styles.economyTitle}>💼 Empresa</Text>
+          <View style={styles.economyGrid}>
+            <View style={styles.economyItem}>
+              <Text style={styles.economyIcon}>💰</Text>
+              <Text style={styles.economyValue}>R$ {progress.economy.money}</Text>
+              <Text style={styles.economyLabel}>Caixa</Text>
+            </View>
+            <View style={styles.economyItem}>
+              <Text style={styles.economyIcon}>📈</Text>
+              <Text style={styles.economyValue}>R$ {progress.economy.revenue}</Text>
+              <Text style={styles.economyLabel}>Receita/mês</Text>
+            </View>
+            <View style={styles.economyItem}>
+              <Text style={styles.economyIcon}>📉</Text>
+              <Text style={styles.economyValue}>R$ {progress.economy.expenses}</Text>
+              <Text style={styles.economyLabel}>Despesas/mês</Text>
+            </View>
+            <View style={styles.economyItem}>
+              <Text style={styles.economyIcon}>⏱️</Text>
+              <Text style={styles.economyValue}>{progress.economy.runway} meses</Text>
+              <Text style={styles.economyLabel}>Runway</Text>
+            </View>
+          </View>
           
-          <StatBar 
+          <View style={styles.riskContainer}>
+            <Text style={styles.riskLabel}>⚠️ Risco</Text>
+            <View style={styles.riskBar}>
+              <View 
+                style={[
+                  styles.riskFill,
+                  { width: `${progress.economy.risk}%` }
+                ]}
+              />
+            </View>
+            <Text style={styles.riskText}>{progress.economy.risk}%</Text>
+          </View>
+        </View>
+
+        {/* Atributos */}
+        <View style={styles.attributesContainer}>
+          <Text style={styles.attributesTitle}>✨ Atributos</Text>
+          <AttributeBar 
+            icon="🔮"
+            label="Visão"
+            value={progress.attributes.vision}
+          />
+          <AttributeBar 
+            icon="📊"
+            label="Gestão"
+            value={progress.attributes.management}
+          />
+          <AttributeBar 
+            icon="📱"
+            label="Marketing"
+            value={progress.attributes.marketing}
+          />
+          <AttributeBar 
             icon="💰"
-            label="Caixa"
-            value={progress.stats.cash}
-            color="#10B981"
+            label="Finanças"
+            value={progress.attributes.finance}
           />
-          <StatBar 
-            icon="😊"
-            label="Interesse dos Clientes"
-            value={progress.stats.customerInterest}
-            color="#3B82F6"
-          />
-          <StatBar 
-            icon="🧠"
-            label="Conhecimento"
-            value={progress.stats.knowledge}
-            color="#8B5CF6"
-          />
-          <StatBar 
-            icon="🔥"
-            label="Motivação"
-            value={progress.stats.motivation}
-            color="#F59E0B"
-          />
-          <StatBar 
-            icon="🌱"
-            label="Impacto Social"
-            value={progress.stats.socialImpact}
-            color="#EC4899"
+          <AttributeBar 
+            icon="👥"
+            label="Liderança"
+            value={progress.attributes.leadership}
           />
         </View>
 
-        {/* Missão atual */}
-        {currentMission && (
-          <View style={styles.missionCard}>
-            <Text style={styles.missionPhase}>
-              {currentMission.phase.replace('_', ' ')}
-            </Text>
-            <Text style={styles.missionTitle}>{currentMission.title}</Text>
-            <Text style={styles.missionDescription}>{currentMission.description}</Text>
+        {/* Botão de Missão */}
+        <View style={styles.missionCard}>
+          <Text style={styles.missionTitle}>🎯 Continuar Jornada</Text>
+          <Text style={styles.missionDescription}>
+            Enfrente desafios e tome decisões estratégicas
+          </Text>
 
-            <View style={styles.missionInfo}>
-              <View style={styles.missionInfoItem}>
-                <Text style={styles.missionInfoIcon}>⚡</Text>
-                <Text style={styles.missionInfoText}>
-                  {currentMission.energyCost} energia
-                </Text>
-              </View>
-              <View style={styles.missionInfoItem}>
-                <Text style={styles.missionInfoIcon}>🎯</Text>
-                <Text style={styles.missionInfoText}>
-                  {currentMission.decisions.length} decisões
-                </Text>
-              </View>
-            </View>
-
-            <TouchableOpacity
-              style={[
-                styles.startButton,
-                progress.energy.current < currentMission.energyCost && styles.startButtonDisabled
-              ]}
-              onPress={handleStartMission}
-              activeOpacity={0.8}
-              disabled={progress.energy.current < currentMission.energyCost}
+          <TouchableOpacity
+            style={styles.startButton}
+            onPress={handleStartMission}
+            activeOpacity={0.8}
+          >
+            <LinearGradient
+              colors={['#8B5CF6', '#D946EF']}
+              style={styles.buttonGradient}
             >
-              <LinearGradient
-                colors={
-                  progress.energy.current >= currentMission.energyCost
-                    ? ['#8B5CF6', '#D946EF']
-                    : ['#64748B', '#475569']
-                }
-                style={styles.buttonGradient}
-              >
-                <Text style={styles.buttonText}>
-                  {progress.energy.current >= currentMission.energyCost
-                    ? 'Iniciar Missão 🚀'
-                    : 'Energia Insuficiente ⚡'}
-                </Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
-        )}
-
-        {/* Progresso */}
-        <View style={styles.progressCard}>
-          <Text style={styles.progressTitle}>📈 Seu Progresso</Text>
-          <View style={styles.progressGrid}>
-            <View style={styles.progressItem}>
-              <Text style={styles.progressNumber}>{progress.completedMissions.length}</Text>
-              <Text style={styles.progressLabel}>Missões Completas</Text>
-            </View>
-            <View style={styles.progressItem}>
-              <Text style={styles.progressNumber}>{progress.totalDecisions}</Text>
-              <Text style={styles.progressLabel}>Decisões Tomadas</Text>
-            </View>
-            <View style={styles.progressItem}>
-              <Text style={styles.progressNumber}>{progress.dayStreak}</Text>
-              <Text style={styles.progressLabel}>Dias Seguidos</Text>
-            </View>
-          </View>
+              <Text style={styles.buttonText}>Iniciar Missão 🚀</Text>
+            </LinearGradient>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </LinearGradient>
   );
 };
 
-// Componente de barra de status
-const StatBar = ({ icon, label, value, color }) => (
-  <View style={styles.statBar}>
-    <View style={styles.statHeader}>
-      <Text style={styles.statIcon}>{icon}</Text>
-      <Text style={styles.statLabel}>{label}</Text>
-      <Text style={styles.statValue}>{value}/100</Text>
+// Componente de barra de atributo
+const AttributeBar = ({ icon, label, value }) => (
+  <View style={styles.attributeBar}>
+    <View style={styles.attributeHeader}>
+      <Text style={styles.attributeIcon}>{icon}</Text>
+      <Text style={styles.attributeLabel}>{label}</Text>
+      <Text style={styles.attributeValue}>{value}/100</Text>
     </View>
-    <View style={styles.statBarBg}>
+    <View style={styles.attributeBarBg}>
       <View 
         style={[
-          styles.statBarFill,
-          { width: `${value}%`, backgroundColor: color }
+          styles.attributeBarFill,
+          { width: `${value}%` }
         ]}
       />
     </View>
@@ -243,53 +234,86 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 20,
   },
-  energyContainer: {
+  levelContainer: {
     flex: 1,
     marginRight: 10,
   },
-  energyLabel: {
-    fontSize: 14,
-    color: '#94A3B8',
+  levelLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#8B5CF6',
     marginBottom: 8,
   },
-  energyBar: {
+  xpBar: {
     height: 12,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     borderRadius: 6,
     overflow: 'hidden',
     marginBottom: 4,
   },
-  energyFill: {
+  xpFill: {
     height: '100%',
-    backgroundColor: '#F59E0B',
+    backgroundColor: '#8B5CF6',
     borderRadius: 6,
   },
-  energyText: {
+  xpText: {
     fontSize: 12,
     color: '#E2E8F0',
     textAlign: 'center',
   },
-  titleContainer: {
-    flex: 1,
-    marginLeft: 10,
+  skillPointsContainer: {
+    backgroundColor: 'rgba(139, 92, 246, 0.2)',
+    padding: 12,
+    borderRadius: 12,
+    alignItems: 'center',
   },
-  titleLabel: {
-    fontSize: 14,
-    color: '#94A3B8',
-    marginBottom: 8,
-  },
-  titleText: {
-    fontSize: 14,
+  skillPointsLabel: {
+    fontSize: 18,
     fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  skillPointsSubtext: {
+    fontSize: 10,
+    color: '#94A3B8',
+  },
+  characterCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  characterName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  characterClass: {
+    fontSize: 16,
     color: '#8B5CF6',
-    textAlign: 'center',
+    marginBottom: 12,
+  },
+  skillsButton: {
+    backgroundColor: 'rgba(139, 92, 246, 0.3)',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+  },
+  skillsButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
   mascotContainer: {
-    marginBottom: 30,
+    marginBottom: 20,
   },
-  statsContainer: {
+  economyContainer: {
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
     borderRadius: 16,
     padding: 20,
@@ -297,136 +321,144 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.1)',
   },
-  statsTitle: {
+  economyTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#FFFFFF',
     marginBottom: 16,
   },
-  statBar: {
+  economyGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
     marginBottom: 16,
   },
-  statHeader: {
+  economyItem: {
+    flex: 1,
+    minWidth: '45%',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    padding: 12,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  economyIcon: {
+    fontSize: 24,
+    marginBottom: 4,
+  },
+  economyValue: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#10B981',
+    marginBottom: 2,
+  },
+  economyLabel: {
+    fontSize: 12,
+    color: '#94A3B8',
+  },
+  riskContainer: {
+    marginTop: 8,
+  },
+  riskLabel: {
+    fontSize: 14,
+    color: '#94A3B8',
+    marginBottom: 8,
+  },
+  riskBar: {
+    height: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 6,
+    overflow: 'hidden',
+    marginBottom: 4,
+  },
+  riskFill: {
+    height: '100%',
+    backgroundColor: '#EF4444',
+    borderRadius: 6,
+  },
+  riskText: {
+    fontSize: 12,
+    color: '#FCA5A5',
+    textAlign: 'center',
+  },
+  attributesContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  attributesTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 16,
+  },
+  attributeBar: {
+    marginBottom: 16,
+  },
+  attributeHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 8,
   },
-  statIcon: {
-    fontSize: 16,
+  attributeIcon: {
+    fontSize: 18,
     marginRight: 8,
   },
-  statLabel: {
-    flex: 1,
+  attributeLabel: {
     fontSize: 14,
     color: '#E2E8F0',
+    flex: 1,
   },
-  statValue: {
+  attributeValue: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: '#8B5CF6',
   },
-  statBarBg: {
+  attributeBarBg: {
     height: 8,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     borderRadius: 4,
     overflow: 'hidden',
   },
-  statBarFill: {
+  attributeBarFill: {
     height: '100%',
+    backgroundColor: '#8B5CF6',
     borderRadius: 4,
   },
   missionCard: {
     backgroundColor: 'rgba(139, 92, 246, 0.1)',
-    borderRadius: 20,
-    padding: 24,
+    borderRadius: 16,
+    padding: 20,
     marginBottom: 20,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: 'rgba(139, 92, 246, 0.3)',
   },
-  missionPhase: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#8B5CF6',
-    textTransform: 'uppercase',
-    marginBottom: 8,
-  },
   missionTitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#FFFFFF',
     marginBottom: 8,
   },
   missionDescription: {
-    fontSize: 15,
+    fontSize: 14,
     color: '#E2E8F0',
     marginBottom: 16,
-    lineHeight: 22,
-  },
-  missionInfo: {
-    flexDirection: 'row',
-    gap: 16,
-    marginBottom: 20,
-  },
-  missionInfoItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  missionInfoIcon: {
-    fontSize: 16,
-    marginRight: 6,
-  },
-  missionInfoText: {
-    fontSize: 14,
-    color: '#94A3B8',
+    lineHeight: 20,
   },
   startButton: {
-    width: '100%',
-  },
-  startButtonDisabled: {
-    opacity: 0.6,
+    borderRadius: 12,
+    overflow: 'hidden',
   },
   buttonGradient: {
     paddingVertical: 16,
-    borderRadius: 12,
     alignItems: 'center',
   },
   buttonText: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#FFFFFF',
-  },
-  progressCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 40,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  progressTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginBottom: 16,
-  },
-  progressGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  progressItem: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  progressNumber: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#8B5CF6',
-    marginBottom: 4,
-  },
-  progressLabel: {
-    fontSize: 12,
-    color: '#94A3B8',
-    textAlign: 'center',
   },
 });
 
