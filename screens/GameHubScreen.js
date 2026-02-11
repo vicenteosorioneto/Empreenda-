@@ -43,15 +43,19 @@ const GameHubScreen = ({ navigation }) => {
   };
 
   const handleStartMission = () => {
-    if (!progress || progress.energy <= 0) {
+    if (!progress || progress.energy.current <= 0) {
       alert('⚡ Energia insuficiente! Complete missões para ganhar XP.');
       return;
     }
-    navigation.navigate('Mission', { missionId: 'mission_1' });
+    navigation.navigate('RPGMission', { missionId: 'mission_1' });
   };
 
   const handleOpenSkills = () => {
     navigation.navigate('SkillTree');
+  };
+
+  const handleMinigame = (gameName) => {
+    navigation.navigate(gameName);
   };
 
   if (loading || !progress || !progress.character) {
@@ -68,22 +72,22 @@ const GameHubScreen = ({ navigation }) => {
         {/* Header com nível e XP */}
         <View style={styles.header}>
           <View style={styles.levelContainer}>
-            <Text style={styles.levelLabel}>🎓 Nível {progress.levels.currentLevel}</Text>
+            <Text style={styles.levelLabel}>🎓 Nível {progress.character.level.currentLevel}</Text>
             <View style={styles.xpBar}>
               <View 
                 style={[
                   styles.xpFill,
-                  { width: `${(progress.levels.currentXP / progress.levels.xpForNextLevel) * 100}%` }
+                  { width: `${(progress.character.level.currentXP / progress.character.level.xpToNextLevel) * 100}%` }
                 ]}
               />
             </View>
             <Text style={styles.xpText}>
-              {progress.levels.currentXP}/{progress.levels.xpForNextLevel} XP
+              {progress.character.level.currentXP}/{progress.character.level.xpToNextLevel} XP
             </Text>
           </View>
 
           <View style={styles.skillPointsContainer}>
-            <Text style={styles.skillPointsLabel}>💎 {progress.levels.skillPoints}</Text>
+            <Text style={styles.skillPointsLabel}>💎 {progress.character.level.skillPoints}</Text>
             <Text style={styles.skillPointsSubtext}>Pontos</Text>
           </View>
         </View>
@@ -158,28 +162,92 @@ const GameHubScreen = ({ navigation }) => {
           <AttributeBar 
             icon="🔮"
             label="Visão"
-            value={progress.attributes.vision}
+            value={progress.character.attributes.vision}
           />
           <AttributeBar 
             icon="📊"
             label="Gestão"
-            value={progress.attributes.management}
+            value={progress.character.attributes.management}
           />
           <AttributeBar 
             icon="📱"
             label="Marketing"
-            value={progress.attributes.marketing}
+            value={progress.character.attributes.marketing}
           />
           <AttributeBar 
             icon="💰"
             label="Finanças"
-            value={progress.attributes.finance}
+            value={progress.character.attributes.finance}
           />
           <AttributeBar 
             icon="👥"
             label="Liderança"
-            value={progress.attributes.leadership}
+            value={progress.character.attributes.leadership}
           />
+        </View>
+
+        {/* Seção de Minigames */}
+        <View style={styles.minigamesContainer}>
+          <Text style={styles.minigamesTitle}>🎮 Minigames</Text>
+          <Text style={styles.minigamesSubtitle}>
+            Treine suas habilidades com jogos rápidos
+          </Text>
+          
+          <View style={styles.minigamesGrid}>
+            {/* Quiz Rápido */}
+            <TouchableOpacity
+              style={styles.minigameCard}
+              onPress={() => handleMinigame('QuizRapido')}
+              activeOpacity={0.8}
+            >
+              <LinearGradient
+                colors={['#3B82F6', '#2563EB']}
+                style={styles.minigameGradient}
+              >
+                <Text style={styles.minigameIcon}>🧠</Text>
+                <Text style={styles.minigameTitle}>Quiz Rápido</Text>
+                <Text style={styles.minigameDescription}>
+                  Teste seus conhecimentos
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            {/* Desafio Empreendedor */}
+            <TouchableOpacity
+              style={styles.minigameCard}
+              onPress={() => handleMinigame('DesafioEmpreendedor')}
+              activeOpacity={0.8}
+            >
+              <LinearGradient
+                colors={['#10B981', '#059669']}
+                style={styles.minigameGradient}
+              >
+                <Text style={styles.minigameIcon}>🚀</Text>
+                <Text style={styles.minigameTitle}>Desafio</Text>
+                <Text style={styles.minigameDescription}>
+                  Resolva casos reais
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            {/* Roda da Inovação */}
+            <TouchableOpacity
+              style={styles.minigameCard}
+              onPress={() => handleMinigame('InnovationWheel')}
+              activeOpacity={0.8}
+            >
+              <LinearGradient
+                colors={['#F59E0B', '#D97706']}
+                style={styles.minigameGradient}
+              >
+                <Text style={styles.minigameIcon}>⚡</Text>
+                <Text style={styles.minigameTitle}>Roda Inovação</Text>
+                <Text style={styles.minigameDescription}>
+                  Gire e aprenda
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Botão de Missão */}
@@ -435,6 +503,56 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: '#8B5CF6',
     borderRadius: 4,
+  },
+  minigamesContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  minigamesTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  minigamesSubtitle: {
+    fontSize: 14,
+    color: '#94A3B8',
+    marginBottom: 16,
+  },
+  minigamesGrid: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  minigameCard: {
+    flex: 1,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  minigameGradient: {
+    padding: 16,
+    alignItems: 'center',
+    minHeight: 140,
+    justifyContent: 'center',
+  },
+  minigameIcon: {
+    fontSize: 36,
+    marginBottom: 8,
+  },
+  minigameTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 4,
+    textAlign: 'center',
+  },
+  minigameDescription: {
+    fontSize: 11,
+    color: 'rgba(255, 255, 255, 0.9)',
+    textAlign: 'center',
   },
   missionCard: {
     backgroundColor: 'rgba(139, 92, 246, 0.1)',
