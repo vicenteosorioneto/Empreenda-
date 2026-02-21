@@ -38,7 +38,22 @@ export default function UserTypeSelectionScreen({ navigation }) {
   ];
 
   const handleSelection = (userType) => {
-    navigation.navigate('CharacterSelection', { userType });
+    // Aluno segue para o fluxo normal
+    if (userType === 'student') {
+      navigation.navigate('CharacterSelection', { userType });
+    }
+    // Família vai para dashboard familiar
+    else if (userType === 'family') {
+      navigation.navigate('FamilyDashboard');
+    }
+    // Professor vai para painel do professor
+    else if (userType === 'teacher') {
+      navigation.navigate('TeacherDashboard');
+    }
+    // Escola vai para painel administrativo
+    else if (userType === 'school') {
+      navigation.navigate('SchoolDashboard');
+    }
   };
 
   return (

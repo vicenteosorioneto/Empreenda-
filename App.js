@@ -37,6 +37,11 @@ import DesafioEmpreendedorScreen from './minigames/DesafioEmpreendedor';
 import InnovationWheelGame from './minigames/InnovationWheelGame';
 import QuizRapido from './minigames/QuizRapido';
 
+// Import dos painéis específicos
+import FamilyDashboardScreen from './screens/FamilyDashboardScreen';
+import TeacherDashboardScreen from './screens/TeacherDashboardScreen';
+import SchoolDashboardScreen from './screens/SchoolDashboardScreen';
+
 // Import das telas RPG
 import GameHubScreen from './screens/GameHubScreen';
 import RPGMissionScreen from './screens/RPGMissionScreen';
@@ -85,6 +90,11 @@ export default function App() {
           {/* Fluxo Principal */}
           <Stack.Screen name="UserTypeSelection" component={UserTypeSelectionScreen} />
           <Stack.Screen name="CharacterSelection" component={CharacterSelectionScreen} />
+          
+          {/* Painéis Específicos por Tipo de Usuário */}
+          <Stack.Screen name="FamilyDashboard" component={FamilyDashboardScreen} />
+          <Stack.Screen name="TeacherDashboard" component={TeacherDashboardScreen} />
+          <Stack.Screen name="SchoolDashboard" component={SchoolDashboardScreen} />
           <Stack.Screen name="ClassAndSchoolSelection" component={ClassAndSchoolSelectionScreen} />
           <Stack.Screen name="Onboarding" component={OnboardingScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />

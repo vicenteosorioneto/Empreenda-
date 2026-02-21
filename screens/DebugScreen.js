@@ -17,6 +17,7 @@ import {
   completeMission,
   awardMedal
 } from '../utils/storage';
+import { populateDemoData, clearAllData as clearMockData, showCurrentData } from '../data/mockData';
 
 const DebugScreen = ({ navigation }) => {
   const [debugData, setDebugData] = useState({});
@@ -90,6 +91,56 @@ const DebugScreen = ({ navigation }) => {
     );
   };
 
+  const populateDemo = async () => {
+    try {
+      Alert.alert(
+        '🎭 Popular Dados Demo',
+        'Isso vai criar:\n• Usuário Maria Silva (Nível 5)\n• 8 medalhas desbloqueadas\n• 2 trilhas completas\n• Ranking com 15 usuários\n\nContinuar?',
+        [
+          { text: 'Cancelar', style: 'cancel' },
+          {
+            text: 'Popular',
+            onPress: async () => {
+              const result = await populateDemoData();
+              if (result.success) {
+                Alert.alert(
+                  '✅ Sucesso!',
+                  'Dados demo populados!\nReinicie o app para ver as mudanças.',
+                  [
+                    { 
+                      text: 'Reiniciar Agora', 
+                      onPress: () => {
+                        navigation.reset({
+                          index: 0,
+                          routes: [{ name: 'Splash' }],
+                        });
+                      }
+                    },
+                    { text: 'Depois', style: 'cancel' }
+                  ]
+                );
+              } else {
+                Alert.alert('Erro', result.error || 'Erro ao popular dados');
+              }
+            }
+          }
+        ]
+      );
+    } catch (error) {
+      Alert.alert('Erro', error.message);
+    }
+  };
+
+  const showData = async () => {
+    try {
+      const data = await showCurrentData();
+      const summary = `📊 Dados Atuais:\n\nNível: ${data.userStats?.level || 'N/A'}\nXP: ${data.userStats?.totalXP || 0}\nMedalhas: ${data.badges?.length || 0}\nRanking: ${data.ranking?.length || 0} usuários`;
+      Alert.alert('Dados do Storage', summary);
+    } catch (error) {
+      Alert.alert('Erro', error.message);
+    }
+  };
+
   if (loading) {
     return (
       <View style={[styles.container, styles.loadingContainer]}>
@@ -145,6 +196,14 @@ const DebugScreen = ({ navigation }) => {
 
       {/* Botões de Teste */}
       <View style={styles.buttonsContainer}>
+        <TouchableOpacity style={styles.demoButton} onPress={populateDemo}>
+          <Text style={styles.buttonText}>🎭 Popular Dados Demo</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.infoButton} onPress={showData}>
+          <Text style={styles.buttonText}>📊 Ver Dados Atuais</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity style={styles.testButton} onPress={testStorage}>
           <Text style={styles.buttonText}>🧪 Testar Storage</Text>
         </TouchableOpacity>
@@ -230,6 +289,20 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     margin: 20,
     marginBottom: 40,
+  },
+  demoButton: {
+    backgroundColor: '#8B5CF6',
+    borderRadius: 15,
+    padding: 15,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  infoButton: {
+    backgroundColor: '#06B6D4',
+    borderRadius: 15,
+    padding: 15,
+    alignItems: 'center',
+    marginBottom: 10,
   },
   testButton: {
     backgroundColor: '#10B981',

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -10,13 +10,12 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Mascot } from '../components/Mascot';
 import GameManager from '../services/GameManager';
-import { GameProgress } from '../types/game';
 
-// 🏆 TELA DE CONCLUSÃO DE MISSÃO
+// 🏆 TELA DE CONCLUSAO DE MISSAO
 
 const MissionCompleteScreen = ({ route, navigation }) => {
-  const { missionId, missionTitle } = route.params;
-  
+  const { missionTitle } = route.params;
+
   const [progress, setProgress] = useState(null);
   const [rewards, setRewards] = useState(null);
   const [scaleAnim] = useState(new Animated.Value(0));
@@ -30,24 +29,29 @@ const MissionCompleteScreen = ({ route, navigation }) => {
   const loadCompletion = async () => {
     try {
       const gameProgress = await GameManager.loadProgress();
-      setProgress(gameProgress);
-      
-      // Calcular recompensas (XP, títulos, etc)
-      const newTitle = GameManager.calculateTitle(gameProgress.completedMissions.length);
+      if (!gameProgress) return;
+
+      const newTitle = GameManager.calculateTitle(
+        gameProgress.completedMissions.length
+      );
       const leveledUp = newTitle !== gameProgress.currentTitle;
-      
+
+      if (leveledUp) {
+        await GameManager.updateTitle(newTitle);
+      }
+
+      setProgress(gameProgress);
       setRewards({
-        newTitle,
         leveledUp,
+        newTitle,
         missionsCompleted: gameProgress.completedMissions.length,
       });
     } catch (error) {
-      console.error('Erro ao carregar conclusão:', error);
+      console.error('Erro ao carregar conclusao da missao:', error);
     }
   };
 
   const animateCompletion = () => {
-    // Animação de escala
     Animated.spring(scaleAnim, {
       toValue: 1,
       friction: 4,
@@ -55,7 +59,6 @@ const MissionCompleteScreen = ({ route, navigation }) => {
       useNativeDriver: true,
     }).start();
 
-    // Animação de fade
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 800,
@@ -79,7 +82,6 @@ const MissionCompleteScreen = ({ route, navigation }) => {
   return (
     <LinearGradient colors={['#0F172A', '#1E293B', '#334155']} style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Troféu animado */}
         <Animated.View
           style={[
             styles.trophyContainer,
@@ -91,35 +93,33 @@ const MissionCompleteScreen = ({ route, navigation }) => {
           <Text style={styles.trophyIcon}>🏆</Text>
         </Animated.View>
 
-        {/* Título */}
         <Animated.View style={{ opacity: fadeAnim }}>
-          <Text style={styles.congratsTitle}>Missão Completa!</Text>
+          <Text style={styles.congratsTitle}>Missao Completa!</Text>
           <Text style={styles.missionName}>{missionTitle}</Text>
         </Animated.View>
 
-        {/* Mascote com mensagem */}
         <View style={styles.mascotContainer}>
           <Mascot
             size="large"
             message={
               rewards.leveledUp
-                ? `🎉 Incrível! Você evoluiu para ${GameManager.getTitleName(rewards.newTitle)}!`
-                : `Parabéns por completar mais uma missão! Continue assim!`
+                ? `🎉 Incrivel! Voce evoluiu para ${GameManager.getTitleName(
+                    rewards.newTitle
+                  )}!`
+                : 'Parabens por completar mais uma missao! Continue assim!'
             }
             animated={true}
           />
         </View>
 
-        {/* Recompensas */}
         <View style={styles.rewardsContainer}>
           <Text style={styles.rewardsTitle}>🎁 Recompensas</Text>
 
-          {/* Nova título (se houver) */}
           {rewards.leveledUp && (
             <View style={styles.rewardCard}>
               <Text style={styles.rewardIcon}>⬆️</Text>
               <View style={styles.rewardContent}>
-                <Text style={styles.rewardLabel}>Novo Título Desbloqueado</Text>
+                <Text style={styles.rewardLabel}>Novo Titulo Desbloqueado</Text>
                 <Text style={styles.rewardValue}>
                   {GameManager.getTitleName(rewards.newTitle)}
                 </Text>
@@ -127,16 +127,14 @@ const MissionCompleteScreen = ({ route, navigation }) => {
             </View>
           )}
 
-          {/* Missões completadas */}
           <View style={styles.rewardCard}>
             <Text style={styles.rewardIcon}>🎯</Text>
             <View style={styles.rewardContent}>
-              <Text style={styles.rewardLabel}>Missões Completadas</Text>
+              <Text style={styles.rewardLabel}>Missoes Completadas</Text>
               <Text style={styles.rewardValue}>{rewards.missionsCompleted}</Text>
             </View>
           </View>
 
-          {/* Streak */}
           <View style={styles.rewardCard}>
             <Text style={styles.rewardIcon}>🔥</Text>
             <View style={styles.rewardContent}>
@@ -146,10 +144,9 @@ const MissionCompleteScreen = ({ route, navigation }) => {
           </View>
         </View>
 
-        {/* Status da startup */}
         <View style={styles.statsCard}>
           <Text style={styles.statsTitle}>📊 Status Atual da sua Startup</Text>
-          
+
           <View style={styles.statsGrid}>
             <View style={styles.statItem}>
               <Text style={styles.statIcon}>💰</Text>
@@ -169,7 +166,7 @@ const MissionCompleteScreen = ({ route, navigation }) => {
             <View style={styles.statItem}>
               <Text style={styles.statIcon}>🔥</Text>
               <Text style={styles.statValue}>{progress.stats.motivation}</Text>
-              <Text style={styles.statLabel}>Motivação</Text>
+              <Text style={styles.statLabel}>Motivacao</Text>
             </View>
             <View style={styles.statItem}>
               <Text style={styles.statIcon}>🌱</Text>
@@ -179,16 +176,12 @@ const MissionCompleteScreen = ({ route, navigation }) => {
           </View>
         </View>
 
-        {/* Botão de continuar */}
         <TouchableOpacity
           style={styles.continueButton}
           onPress={handleContinue}
           activeOpacity={0.8}
         >
-          <LinearGradient
-            colors={['#8B5CF6', '#D946EF']}
-            style={styles.buttonGradient}
-          >
+          <LinearGradient colors={['#8B5CF6', '#D946EF']} style={styles.buttonGradient}>
             <Text style={styles.buttonText}>Continuar Jornada →</Text>
           </LinearGradient>
         </TouchableOpacity>
@@ -202,103 +195,103 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    padding: 20,
-    paddingTop: 80,
+    padding: 19,
+    paddingTop: 64,
     alignItems: 'center',
   },
   loadingText: {
-    fontSize: 18,
+    fontSize: 14,
     color: '#FFFFFF',
     textAlign: 'center',
     marginTop: 100,
   },
   trophyContainer: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: 96,
+    height: 96,
+    borderRadius: 48,
     backgroundColor: 'rgba(139, 92, 246, 0.2)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 24,
-    borderWidth: 3,
+    marginBottom: 19,
+    borderWidth: 2,
     borderColor: 'rgba(139, 92, 246, 0.4)',
   },
   trophyIcon: {
-    fontSize: 64,
+    fontSize: 51,
   },
   congratsTitle: {
-    fontSize: 32,
+    fontSize: 26,
     fontWeight: 'bold',
     color: '#FFFFFF',
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   missionName: {
-    fontSize: 18,
+    fontSize: 14,
     color: '#8B5CF6',
     textAlign: 'center',
-    marginBottom: 32,
+    marginBottom: 26,
   },
   mascotContainer: {
     width: '100%',
-    marginBottom: 32,
+    marginBottom: 26,
   },
   rewardsContainer: {
     width: '100%',
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 20,
-    padding: 24,
-    marginBottom: 24,
+    borderRadius: 16,
+    padding: 19,
+    marginBottom: 19,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.1)',
   },
   rewardsTitle: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    marginBottom: 16,
+    marginBottom: 13,
   },
   rewardCard: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'rgba(139, 92, 246, 0.1)',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
+    borderRadius: 10,
+    padding: 13,
+    marginBottom: 10,
     borderWidth: 1,
     borderColor: 'rgba(139, 92, 246, 0.2)',
   },
   rewardIcon: {
-    fontSize: 32,
-    marginRight: 16,
+    fontSize: 26,
+    marginRight: 13,
   },
   rewardContent: {
     flex: 1,
   },
   rewardLabel: {
-    fontSize: 14,
+    fontSize: 11,
     color: '#94A3B8',
-    marginBottom: 4,
+    marginBottom: 3,
   },
   rewardValue: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
   statsCard: {
     width: '100%',
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 20,
-    padding: 24,
-    marginBottom: 24,
+    borderRadius: 16,
+    padding: 19,
+    marginBottom: 19,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.1)',
   },
   statsTitle: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    marginBottom: 20,
+    marginBottom: 16,
     textAlign: 'center',
   },
   statsGrid: {
@@ -309,34 +302,34 @@ const styles = StyleSheet.create({
   statItem: {
     width: '30%',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 13,
   },
   statIcon: {
-    fontSize: 28,
-    marginBottom: 8,
+    fontSize: 22,
+    marginBottom: 6,
   },
   statValue: {
-    fontSize: 24,
+    fontSize: 19,
     fontWeight: 'bold',
     color: '#8B5CF6',
-    marginBottom: 4,
+    marginBottom: 3,
   },
   statLabel: {
-    fontSize: 12,
+    fontSize: 10,
     color: '#94A3B8',
     textAlign: 'center',
   },
   continueButton: {
     width: '100%',
-    marginTop: 8,
+    marginTop: 6,
   },
   buttonGradient: {
-    paddingVertical: 18,
-    borderRadius: 16,
+    paddingVertical: 13,
+    borderRadius: 13,
     alignItems: 'center',
   },
   buttonText: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#FFFFFF',
   },

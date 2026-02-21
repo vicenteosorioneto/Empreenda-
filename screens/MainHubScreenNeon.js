@@ -469,13 +469,13 @@ const styles = StyleSheet.create({
 
   // Hero Section
   heroSection: {
-    paddingVertical: THEME.spacing.xxl,
-    paddingHorizontal: THEME.spacing.lg,
+    paddingVertical: THEME.spacing.xl,
+    paddingHorizontal: THEME.spacing.md,
     alignItems: 'center',
   },
   heroContent: {
     alignItems: 'center',
-    marginBottom: THEME.spacing.xl,
+    marginBottom: THEME.spacing.lg,
   },
   userHeaderInfo: {
     alignItems: 'center',
@@ -483,31 +483,31 @@ const styles = StyleSheet.create({
   },
   userName: {
     color: THEME.colors.textInverted,
-    fontSize: THEME.fontSize.base,
+    fontSize: THEME.fontSize.sm,
     fontWeight: THEME.fontWeight.semibold,
   },
   userLevelTitle: {
     color: THEME.colors.textInverted,
-    fontSize: THEME.fontSize.lg,
+    fontSize: THEME.fontSize.base,
     fontWeight: THEME.fontWeight.bold,
-    marginTop: THEME.spacing.sm,
+    marginTop: THEME.spacing.xs,
   },
   userLevelNumber: {
     color: 'rgba(255,255,255,0.7)',
-    fontSize: THEME.fontSize.sm,
+    fontSize: THEME.fontSize.xs,
     marginTop: THEME.spacing.xs,
   },
   streakBadge: {
     flexDirection: 'row',
     backgroundColor: 'rgba(255,255,255,0.2)',
-    paddingVertical: THEME.spacing.sm,
-    paddingHorizontal: THEME.spacing.lg,
+    paddingVertical: THEME.spacing.xs,
+    paddingHorizontal: THEME.spacing.md,
     borderRadius: THEME.borderRadius.round,
-    marginTop: THEME.spacing.lg,
+    marginTop: THEME.spacing.md,
     alignItems: 'center',
   },
   streakIcon: {
-    fontSize: 16,
+    fontSize: 14,
     marginRight: THEME.spacing.sm,
   },
   streakText: {
@@ -540,48 +540,48 @@ const styles = StyleSheet.create({
   // Stats Grid
   statsGrid: {
     flexDirection: 'row',
-    paddingHorizontal: THEME.spacing.lg,
-    paddingVertical: THEME.spacing.lg,
-    gap: THEME.spacing.md,
+    paddingHorizontal: THEME.spacing.md,
+    paddingVertical: THEME.spacing.md,
+    gap: THEME.spacing.sm,
   },
   statCard: {
     flex: 1,
     backgroundColor: THEME.colors.darkCard,
-    padding: THEME.spacing.md,
-    borderRadius: THEME.borderRadius.lg,
+    padding: THEME.spacing.sm,
+    borderRadius: THEME.borderRadius.md,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.1)',
   },
   statEmoji: {
-    fontSize: 24,
-    marginBottom: THEME.spacing.sm,
+    fontSize: 20,
+    marginBottom: THEME.spacing.xs,
   },
   statLabel: {
     color: THEME.colors.textSecondary,
     fontSize: THEME.fontSize.xs,
-    marginBottom: THEME.spacing.xs,
+    marginBottom: 2,
   },
   statValue: {
     color: THEME.colors.textInverted,
-    fontSize: THEME.fontSize.lg,
+    fontSize: THEME.fontSize.base,
     fontWeight: THEME.fontWeight.bold,
   },
 
   // Section
   section: {
-    paddingHorizontal: THEME.spacing.lg,
-    paddingVertical: THEME.spacing.lg,
+    paddingHorizontal: THEME.spacing.md,
+    paddingVertical: THEME.spacing.md,
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: THEME.spacing.lg,
+    marginBottom: THEME.spacing.md,
   },
   sectionTitle: {
     color: THEME.colors.textInverted,
-    fontSize: THEME.fontSize.lg,
+    fontSize: THEME.fontSize.base,
     fontWeight: THEME.fontWeight.bold,
   },
   sectionButton: {
@@ -590,27 +590,27 @@ const styles = StyleSheet.create({
   },
   sectionButtonText: {
     color: THEME.colors.neonBlue,
-    fontSize: THEME.fontSize.sm,
+    fontSize: THEME.fontSize.xs,
     fontWeight: THEME.fontWeight.semibold,
   },
 
   // Daily Missions
   dailyMissionsScroll: {
-    marginBottom: THEME.spacing.lg,
+    marginBottom: THEME.spacing.md,
   },
   dailyMissionCard: {
     marginRight: THEME.spacing.md,
-    paddingVertical: THEME.spacing.lg,
-    paddingHorizontal: THEME.spacing.xl,
+    paddingVertical: THEME.spacing.md,
+    paddingHorizontal: THEME.spacing.lg,
     borderRadius: THEME.borderRadius.lg,
     alignItems: 'center',
-    minWidth: 120,
+    minWidth: 96,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.2)',
   },
   dailyMissionEmoji: {
-    fontSize: 32,
-    marginBottom: THEME.spacing.sm,
+    fontSize: 26,
+    marginBottom: THEME.spacing.xs,
   },
   dailyMissionText: {
     color: THEME.colors.textInverted,
@@ -630,18 +630,18 @@ const styles = StyleSheet.create({
   },
   trilhaWrapper: {
     alignItems: 'center',
-    marginBottom: THEME.spacing.lg,
+    marginBottom: THEME.spacing.md,
   },
   connectorLine: {
     width: 3,
-    height: 20,
+    height: 16,
     backgroundColor: 'rgba(255,255,255,0.2)',
     marginBottom: THEME.spacing.md,
     borderRadius: THEME.borderRadius.sm,
   },
   trilhaCardNeon: {
     width: '100%',
-    padding: THEME.spacing.lg,
+    padding: THEME.spacing.md,
     borderRadius: THEME.borderRadius.lg,
     borderWidth: 2,
     overflow: 'hidden',
@@ -654,25 +654,25 @@ const styles = StyleSheet.create({
   },
   trilhaTitle: {
     color: THEME.colors.textInverted,
-    fontSize: THEME.fontSize.base,
+    fontSize: THEME.fontSize.sm,
     fontWeight: THEME.fontWeight.bold,
     flex: 1,
   },
   trilhaDescription: {
     color: 'rgba(255,255,255,0.7)',
-    fontSize: THEME.fontSize.sm,
+    fontSize: THEME.fontSize.xs,
     marginBottom: THEME.spacing.md,
   },
   trilhaProgress: {
-    marginTop: THEME.spacing.md,
+    marginTop: THEME.spacing.sm,
   },
   progressBarSmall: {
-    height: 8,
+    height: 6,
     backgroundColor: 'rgba(0,0,0,0.3)',
     borderRadius: THEME.borderRadius.sm,
     borderWidth: 1,
     overflow: 'hidden',
-    marginBottom: THEME.spacing.sm,
+    marginBottom: THEME.spacing.xs,
   },
   progressFillSmall: {
     height: '100%',
@@ -689,17 +689,17 @@ const styles = StyleSheet.create({
     fontWeight: THEME.fontWeight.bold,
   },
   lockIcon: {
-    fontSize: 18,
+    fontSize: 16,
   },
   almostIcon: {
-    fontSize: 18,
+    fontSize: 16,
   },
 
   // Mini-Games
   miniGamesGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: THEME.spacing.md,
+    gap: THEME.spacing.sm,
     justifyContent: 'space-between',
   },
   miniGameCard: {
@@ -716,36 +716,36 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   miniGameEmoji: {
-    fontSize: 36,
-    marginBottom: THEME.spacing.sm,
+    fontSize: 30,
+    marginBottom: THEME.spacing.xs,
   },
   miniGameName: {
     color: THEME.colors.textInverted,
-    fontSize: THEME.fontSize.sm,
+    fontSize: THEME.fontSize.xs,
     fontWeight: THEME.fontWeight.semibold,
   },
 
   // Nav Buttons
   navButtonsSection: {
     flexDirection: 'row',
-    paddingHorizontal: THEME.spacing.lg,
-    paddingVertical: THEME.spacing.xl,
-    gap: THEME.spacing.md,
+    paddingHorizontal: THEME.spacing.md,
+    paddingVertical: THEME.spacing.lg,
+    gap: THEME.spacing.sm,
     justifyContent: 'space-between',
     flexWrap: 'wrap',
   },
   navButton: {
     flex: 1,
     minWidth: '22%',
-    paddingVertical: THEME.spacing.lg,
+    paddingVertical: THEME.spacing.md,
     alignItems: 'center',
-    borderRadius: THEME.borderRadius.lg,
+    borderRadius: THEME.borderRadius.md,
     borderWidth: 2,
     backgroundColor: THEME.colors.darkCard,
   },
   navButtonEmoji: {
-    fontSize: 24,
-    marginBottom: THEME.spacing.sm,
+    fontSize: 20,
+    marginBottom: THEME.spacing.xs,
   },
   navButtonText: {
     color: THEME.colors.textInverted,

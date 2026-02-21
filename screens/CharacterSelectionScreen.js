@@ -79,7 +79,7 @@ export default function CharacterSelectionScreen({ navigation, route }) {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Ionicons name="arrow-back" size={24} color="#fff" />
+          <Ionicons name="arrow-back" size={20} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.title}>Escolha seu Personagem</Text>
         <Text style={styles.subtitle}>Selecione o perfil que mais combina com você</Text>
@@ -108,12 +108,12 @@ export default function CharacterSelectionScreen({ navigation, route }) {
               >
                 {selectedCharacter?.id === character.id && (
                   <View style={styles.selectedBadge}>
-                    <Ionicons name="checkmark-circle" size={28} color="#fff" />
+                    <Ionicons name="checkmark-circle" size={22} color="#fff" />
                   </View>
                 )}
                 
                 <View style={styles.iconCircle}>
-                  <Ionicons name={character.icon} size={40} color="#fff" />
+                  <Ionicons name={character.icon} size={32} color="#fff" />
                 </View>
                 
                 <Text style={styles.characterName}>{character.name}</Text>
@@ -141,7 +141,7 @@ export default function CharacterSelectionScreen({ navigation, route }) {
             end={{ x: 1, y: 0 }}
           >
             <Text style={styles.continueButtonText}>Continuar</Text>
-            <Ionicons name="arrow-forward" size={20} color="#fff" />
+            <Ionicons name="arrow-forward" size={16} color="#fff" />
           </LinearGradient>
         </TouchableOpacity>
       </View>
@@ -152,34 +152,34 @@ export default function CharacterSelectionScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 50,
+    paddingTop: 40,
   },
   header: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
+    paddingHorizontal: 16,
+    marginBottom: 16,
   },
   backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 16,
   },
   title: {
-    fontSize: 28,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 13,
     color: '#a8b2d1',
   },
   scrollContent: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
   charactersGrid: {
     flexDirection: 'row',
@@ -187,19 +187,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   characterWrapper: {
-    width: (width - 60) / 2,
-    marginBottom: 20,
+    width: (width - 48) / 2,
+    marginBottom: 16,
   },
   characterCard: {
-    borderRadius: 20,
-    padding: 20,
+    borderRadius: 16,
+    padding: 16,
     alignItems: 'center',
-    minHeight: 220,
+    minHeight: 176,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
+    shadowRadius: 6,
+    elevation: 6,
     position: 'relative',
   },
   selectedCard: {
@@ -208,41 +208,41 @@ const styles = StyleSheet.create({
   },
   selectedBadge: {
     position: 'absolute',
-    top: 10,
-    right: 10,
+    top: 8,
+    right: 8,
   },
   iconCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 12,
   },
   characterName: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 6,
+    marginBottom: 5,
     textAlign: 'center',
   },
   characterPersonality: {
-    fontSize: 14,
+    fontSize: 11,
     fontWeight: '600',
     color: '#f0f0f0',
-    marginBottom: 8,
+    marginBottom: 6,
     textAlign: 'center',
   },
   characterDescription: {
-    fontSize: 12,
+    fontSize: 10,
     color: '#e0e0e0',
     textAlign: 'center',
-    lineHeight: 16,
+    lineHeight: 13,
   },
   footer: {
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
   },
   continueButton: {
@@ -256,11 +256,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 16,
-    gap: 10,
+    paddingVertical: 13,
+    gap: 8,
   },
   continueButtonText: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#fff',
   },

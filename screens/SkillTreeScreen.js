@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -12,14 +12,28 @@ import { SKILLS_DATA } from '../data/skillsData';
 import SkillTreeManager from '../services/SkillTreeManager';
 import RPGEngine from '../services/RPGEngine';
 
-// 🌳 SKILL TREE SCREEN
-
 const CATEGORIES = {
   PITCH: { name: 'Pitch', emoji: '🎤', color: '#F59E0B' },
   FINANCE: { name: 'Finanças', emoji: '💰', color: '#10B981' },
   MARKETING: { name: 'Marketing', emoji: '📱', color: '#3B82F6' },
   LEADERSHIP: { name: 'Liderança', emoji: '👥', color: '#8B5CF6' },
   TECH: { name: 'Tecnologia', emoji: '💻', color: '#EC4899' },
+};
+
+const ATTRIBUTE_ICONS = {
+  vision: '🔮',
+  management: '🧭',
+  marketing: '📣',
+  finance: '💰',
+  leadership: '👥',
+};
+
+const ATTRIBUTE_NAMES = {
+  vision: 'Visão',
+  management: 'Gestão',
+  marketing: 'Marketing',
+  finance: 'Finanças',
+  leadership: 'Liderança',
 };
 
 const SkillTreeScreen = ({ navigation }) => {
@@ -44,33 +58,31 @@ const SkillTreeScreen = ({ navigation }) => {
 
   const handleUnlockSkill = async () => {
     if (!selectedSkill) return;
-
     const result = await SkillTreeManager.unlockSkill(selectedSkill.id);
-    
+
     if (result.success) {
       alert(`✅ ${selectedSkill.name} desbloqueada!`);
-      await loadProgress();
       setModalVisible(false);
+      await loadProgress();
     } else {
-      alert(`❌ ${result.error}`);
+      alert(result.message || 'Nao foi possivel desbloquear esta habilidade.');
     }
   };
 
   const renderSkillCard = (skill) => {
-    const isUnlocked = skill.unlocked;
-    const canUnlock = progress && 
-      progress.levels.skillPoints > 0 && 
-      SkillTreeManager.checkPrerequisites(skill, progress.skillTree);
-    
+    const storedSkill = progress?.character?.skills?.[skill.id] || skill;
+    const isUnlocked = storedSkill.unlocked;
+    const canUnlock =
+      progress &&
+      progress.character.level.skillPoints >= skill.cost &&
+      SkillTreeManager.checkPrerequisites(skill, progress.character.skills);
+
     return (
       <TouchableOpacity
         key={skill.id}
-        style={[
-          styles.skillCard,
-          isUnlocked && styles.skillCardUnlocked,
-        ]}
-        onPress={() => handleSkillPress(skill)}
-        activeOpacity={0.8}
+        activeOpacity={0.85}
+        onPress={() => handleSkillPress(storedSkill)}
+        style={[styles.skillCard, isUnlocked && styles.skillCardUnlocked]}
       >
         <LinearGradient
           colors={
@@ -88,7 +100,9 @@ const SkillTreeScreen = ({ navigation }) => {
               <Text style={[styles.skillName, !isUnlocked && styles.skillNameLocked]}>
                 {skill.name}
               </Text>
-              <Text style={styles.skillLevel}>Nível {skill.level}/{skill.maxLevel}</Text>
+              <Text style={styles.skillLevel}>
+                Nivel {storedSkill.level}/{skill.maxLevel}
+              </Text>
             </View>
           </View>
 
@@ -100,7 +114,7 @@ const SkillTreeScreen = ({ navigation }) => {
 
           {!isUnlocked && canUnlock && (
             <View style={styles.canUnlockBadge}>
-              <Text style={styles.canUnlockText}>✨ Disponível</Text>
+              <Text style={styles.canUnlockText}>✨ Disponivel</Text>
             </View>
           )}
 
@@ -118,24 +132,23 @@ const SkillTreeScreen = ({ navigation }) => {
     if (!selectedSkill) return null;
 
     const isUnlocked = selectedSkill.unlocked;
-    const canUnlock = progress && 
-      progress.levels.skillPoints > 0 && 
-      SkillTreeManager.checkPrerequisites(selectedSkill, progress.skillTree);
+    const canUnlock =
+      progress &&
+      progress.character.level.skillPoints >= selectedSkill.cost &&
+      SkillTreeManager.checkPrerequisites(selectedSkill, progress.character.skills);
     const hasPrereqs = selectedSkill.prerequisites.length > 0;
+    const effects = selectedSkill.effects?.attributes || {};
+    const passiveEffect = selectedSkill.effects?.passive;
 
     return (
       <Modal
         animationType="slide"
-        transparent={true}
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <LinearGradient
-              colors={['#1E293B', '#334155']}
-              style={styles.modalGradient}
-            >
+            <LinearGradient colors={['#1E293B', '#334155']} style={styles.modalGradient}>
               <View style={styles.modalHeader}>
                 <Text style={styles.modalEmoji}>{selectedSkill.emoji}</Text>
                 <Text style={styles.modalTitle}>{selectedSkill.name}</Text>
@@ -146,16 +159,19 @@ const SkillTreeScreen = ({ navigation }) => {
 
                 {hasPrereqs && (
                   <View style={styles.prereqsContainer}>
-                    <Text style={styles.prereqsTitle}>📋 Pré-requisitos:</Text>
+                    <Text style={styles.prereqsTitle}>📋 Pre-requisitos:</Text>
                     {selectedSkill.prerequisites.map((prereqId) => {
-                      const prereq = SKILLS_DATA.find(s => s.id === prereqId);
-                      const prereqUnlocked = progress?.skillTree[prereqId]?.unlocked;
+                      const prereq = SKILLS_DATA[prereqId];
+                      const prereqUnlocked = progress?.character?.skills?.[prereqId]?.unlocked;
                       return (
                         <View key={prereqId} style={styles.prereqItem}>
-                          <Text style={styles.prereqIcon}>
-                            {prereqUnlocked ? '✅' : '⬜'}
-                          </Text>
-                          <Text style={[styles.prereqText, prereqUnlocked && styles.prereqTextComplete]}>
+                          <Text style={styles.prereqIcon}>{prereqUnlocked ? '✅' : '⬜'}</Text>
+                          <Text
+                            style={[
+                              styles.prereqText,
+                              prereqUnlocked && styles.prereqTextComplete,
+                            ]}
+                          >
                             {prereq?.name || prereqId}
                           </Text>
                         </View>
@@ -166,45 +182,29 @@ const SkillTreeScreen = ({ navigation }) => {
 
                 <View style={styles.effectsContainer}>
                   <Text style={styles.effectsTitle}>✨ Efeitos:</Text>
-                  {Object.entries(selectedSkill.effects.attributes).map(([attr, value]) => {
-                    if (value === 0) return null;
-                    const icons = {
-                      vision: '🔮',
-                      management: '📊',
-                      marketing: '📱',
-                      finance: '💰',
-                      leadership: '👥',
-                    };
-                    const names = {
-                      vision: 'Visão',
-                      management: 'Gestão',
-                      marketing: 'Marketing',
-                      finance: 'Finanças',
-                      leadership: 'Liderança',
-                    };
+                  {Object.entries(effects).map(([attr, value]) => {
+                    if (!value) return null;
                     return (
                       <View key={attr} style={styles.effectItem}>
-                        <Text style={styles.effectIcon}>{icons[attr]}</Text>
+                        <Text style={styles.effectIcon}>{ATTRIBUTE_ICONS[attr] || '⭐'}</Text>
                         <Text style={styles.effectText}>
-                          +{value} {names[attr]}
+                          +{value} {ATTRIBUTE_NAMES[attr] || attr}
                         </Text>
                       </View>
                     );
                   })}
-                  {selectedSkill.effects.passive && (
+
+                  {passiveEffect && (
                     <View style={styles.passiveEffect}>
                       <Text style={styles.passiveIcon}>⚡</Text>
-                      <Text style={styles.passiveText}>{selectedSkill.effects.passive}</Text>
+                      <Text style={styles.passiveText}>{passiveEffect}</Text>
                     </View>
                   )}
                 </View>
 
                 <View style={styles.modalActions}>
                   {!isUnlocked && canUnlock && (
-                    <TouchableOpacity
-                      style={styles.unlockButton}
-                      onPress={handleUnlockSkill}
-                    >
+                    <TouchableOpacity style={styles.unlockButton} onPress={handleUnlockSkill}>
                       <LinearGradient
                         colors={['#8B5CF6', '#7C3AED']}
                         style={styles.unlockButtonGradient}
@@ -219,9 +219,9 @@ const SkillTreeScreen = ({ navigation }) => {
                   {!isUnlocked && !canUnlock && (
                     <View style={styles.cannotUnlock}>
                       <Text style={styles.cannotUnlockText}>
-                        {progress?.levels.skillPoints === 0
-                          ? '❌ Sem pontos disponíveis'
-                          : '❌ Complete os pré-requisitos'}
+                        {progress?.character?.level?.skillPoints === 0
+                          ? '❌ Sem pontos disponiveis'
+                          : '❌ Complete os pre-requisitos'}
                       </Text>
                     </View>
                   )}
@@ -255,31 +255,26 @@ const SkillTreeScreen = ({ navigation }) => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Text style={styles.backButtonText}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>Árvore de Habilidades</Text>
+        <Text style={styles.title}>Arvore de Habilidades</Text>
         <View style={styles.pointsBadge}>
-          <Text style={styles.pointsText}>💎 {progress.levels.skillPoints}</Text>
+          <Text style={styles.pointsText}>💎 {progress.character.level.skillPoints}</Text>
         </View>
       </View>
 
-      <ScrollView
-        horizontal
-        style={styles.categoriesScroll}
-        showsHorizontalScrollIndicator={false}
-      >
+      <ScrollView horizontal style={styles.categoriesScroll} showsHorizontalScrollIndicator={false}>
         {Object.entries(CATEGORIES).map(([key, category]) => (
           <TouchableOpacity
             key={key}
-            style={[
-              styles.categoryTab,
-              selectedCategory === key && styles.categoryTabActive,
-            ]}
+            style={[styles.categoryTab, selectedCategory === key && styles.categoryTabActive]}
             onPress={() => setSelectedCategory(key)}
           >
             <Text style={styles.categoryEmoji}>{category.emoji}</Text>
-            <Text style={[
-              styles.categoryName,
-              selectedCategory === key && styles.categoryNameActive,
-            ]}>
+            <Text
+              style={[
+                styles.categoryName,
+                selectedCategory === key && styles.categoryNameActive,
+              ]}
+            >
               {category.name}
             </Text>
           </TouchableOpacity>
@@ -302,7 +297,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   loadingText: {
-    fontSize: 18,
+    fontSize: 14,
     color: '#FFFFFF',
     textAlign: 'center',
     marginTop: 100,
@@ -311,62 +306,61 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 20,
-    paddingTop: 60,
+    padding: 16,
+    paddingTop: 48,
   },
   backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
   },
   backButtonText: {
-    fontSize: 24,
+    fontSize: 19,
     color: '#FFFFFF',
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
     flex: 1,
     textAlign: 'center',
-  },
-  pointsBadge: {
-    backgroundColor: 'rgba(139, 92, 246, 0.3)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-  },
-  pointsText: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
+  pointsBadge: {
+    backgroundColor: 'rgba(139, 92, 246, 0.3)',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 13,
+  },
+  pointsText: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
   categoriesScroll: {
-    maxHeight: 60,
-    paddingHorizontal: 20,
-    marginBottom: 20,
+    maxHeight: 48,
+    paddingHorizontal: 16,
+    marginBottom: 16,
   },
   categoryTab: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 16,
-    marginRight: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 13,
+    borderRadius: 13,
+    marginRight: 10,
   },
   categoryTabActive: {
     backgroundColor: 'rgba(139, 92, 246, 0.3)',
   },
   categoryEmoji: {
-    fontSize: 20,
-    marginRight: 8,
+    fontSize: 16,
+    marginRight: 6,
   },
   categoryName: {
-    fontSize: 14,
+    fontSize: 11,
     color: '#94A3B8',
     fontWeight: '600',
   },
@@ -377,11 +371,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   skillsContainer: {
-    padding: 20,
+    padding: 16,
   },
   skillCard: {
-    marginBottom: 16,
-    borderRadius: 16,
+    marginBottom: 13,
+    borderRadius: 13,
     overflow: 'hidden',
   },
   skillCardUnlocked: {
@@ -389,22 +383,22 @@ const styles = StyleSheet.create({
     borderColor: '#10B981',
   },
   skillCardGradient: {
-    padding: 16,
+    padding: 13,
   },
   skillHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   skillEmoji: {
-    fontSize: 40,
-    marginRight: 12,
+    fontSize: 32,
+    marginRight: 10,
   },
   skillInfo: {
     flex: 1,
   },
   skillName: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#FFFFFF',
     marginBottom: 2,
@@ -413,40 +407,40 @@ const styles = StyleSheet.create({
     color: '#94A3B8',
   },
   skillLevel: {
-    fontSize: 12,
+    fontSize: 10,
     color: '#64748B',
   },
   unlockedBadge: {
     backgroundColor: '#10B981',
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-    borderRadius: 8,
+    paddingVertical: 3,
+    paddingHorizontal: 8,
+    borderRadius: 6,
     alignSelf: 'flex-start',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   unlockedText: {
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
   canUnlockBadge: {
     backgroundColor: '#8B5CF6',
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-    borderRadius: 8,
+    paddingVertical: 3,
+    paddingHorizontal: 8,
+    borderRadius: 6,
     alignSelf: 'flex-start',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   canUnlockText: {
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
   costContainer: {
-    marginTop: 4,
+    marginTop: 3,
   },
   costText: {
-    fontSize: 14,
+    fontSize: 11,
     color: '#E2E8F0',
     fontWeight: '600',
   },
@@ -457,24 +451,24 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     height: '80%',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    borderTopLeftRadius: 19,
+    borderTopRightRadius: 19,
     overflow: 'hidden',
   },
   modalGradient: {
     flex: 1,
-    padding: 24,
+    padding: 19,
   },
   modalHeader: {
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 16,
   },
   modalEmoji: {
-    fontSize: 64,
-    marginBottom: 12,
+    fontSize: 51,
+    marginBottom: 10,
   },
   modalTitle: {
-    fontSize: 24,
+    fontSize: 19,
     fontWeight: 'bold',
     color: '#FFFFFF',
     textAlign: 'center',
@@ -483,34 +477,34 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   modalDescription: {
-    fontSize: 16,
+    fontSize: 13,
     color: '#E2E8F0',
-    lineHeight: 24,
-    marginBottom: 20,
+    lineHeight: 19,
+    marginBottom: 16,
   },
   prereqsContainer: {
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 16,
+    padding: 13,
+    borderRadius: 10,
+    marginBottom: 13,
   },
   prereqsTitle: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    marginBottom: 12,
+    marginBottom: 10,
   },
   prereqItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   prereqIcon: {
-    fontSize: 16,
-    marginRight: 8,
+    fontSize: 13,
+    marginRight: 6,
   },
   prereqText: {
-    fontSize: 14,
+    fontSize: 11,
     color: '#94A3B8',
   },
   prereqTextComplete: {
@@ -519,82 +513,82 @@ const styles = StyleSheet.create({
   },
   effectsContainer: {
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 20,
+    padding: 13,
+    borderRadius: 10,
+    marginBottom: 16,
   },
   effectsTitle: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    marginBottom: 12,
+    marginBottom: 10,
   },
   effectItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   effectIcon: {
-    fontSize: 16,
-    marginRight: 8,
+    fontSize: 13,
+    marginRight: 6,
   },
   effectText: {
-    fontSize: 14,
+    fontSize: 11,
     color: '#10B981',
     fontWeight: '600',
   },
   passiveEffect: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 8,
-    padding: 12,
+    marginTop: 6,
+    padding: 10,
     backgroundColor: 'rgba(139, 92, 246, 0.2)',
-    borderRadius: 8,
+    borderRadius: 6,
   },
   passiveIcon: {
-    fontSize: 16,
-    marginRight: 8,
+    fontSize: 13,
+    marginRight: 6,
   },
   passiveText: {
-    fontSize: 13,
+    fontSize: 10,
     color: '#E2E8F0',
     flex: 1,
   },
   modalActions: {
-    gap: 12,
+    gap: 10,
   },
   unlockButton: {
-    borderRadius: 16,
+    borderRadius: 13,
     overflow: 'hidden',
   },
   unlockButtonGradient: {
-    paddingVertical: 16,
+    paddingVertical: 13,
     alignItems: 'center',
   },
   unlockButtonText: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
   cannotUnlock: {
     backgroundColor: 'rgba(239, 68, 68, 0.2)',
-    padding: 16,
-    borderRadius: 12,
+    padding: 13,
+    borderRadius: 10,
     alignItems: 'center',
   },
   cannotUnlockText: {
-    fontSize: 14,
+    fontSize: 11,
     color: '#FCA5A5',
     fontWeight: '600',
   },
   closeButton: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    paddingVertical: 16,
-    borderRadius: 16,
+    paddingVertical: 13,
+    borderRadius: 13,
     alignItems: 'center',
   },
   closeButtonText: {
-    fontSize: 16,
+    fontSize: 13,
     color: '#FFFFFF',
     fontWeight: '600',
   },

@@ -6,14 +6,12 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
-  Animated,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { CharacterClass } from '../types/rpg';
 import { CLASSES_INFO } from '../data/skillsData';
 import RPGEngine from '../services/RPGEngine';
 
-// 🎭 CRIAÇÃO DE PERSONAGEM RPG
+// 🎭 CRIACAO DE PERSONAGEM RPG
 
 const CharacterCreationScreen = ({ navigation }) => {
   const [name, setName] = useState('');
@@ -30,23 +28,18 @@ const CharacterCreationScreen = ({ navigation }) => {
 
   const handleClassSelect = async (classId) => {
     setSelectedClass(classId);
-    
+
     // Pequeno delay para feedback visual
     setTimeout(async () => {
-      // Inicializar personagem
       await RPGEngine.initializeNewCharacter(name, classId);
-      
-      // Navegar para o jogo
       navigation.replace('GameHub');
     }, 500);
   };
 
   const renderNameStep = () => (
     <View style={styles.stepContainer}>
-      <Text style={styles.title}>Qual é o seu nome?</Text>
-      <Text style={styles.subtitle}>
-        Como você quer ser chamado nessa jornada?
-      </Text>
+      <Text style={styles.title}>Qual e o seu nome?</Text>
+      <Text style={styles.subtitle}>Como voce quer ser chamado nessa jornada?</Text>
 
       <TextInput
         style={styles.input}
@@ -76,9 +69,7 @@ const CharacterCreationScreen = ({ navigation }) => {
   const renderClassStep = () => (
     <View style={styles.stepContainer}>
       <Text style={styles.title}>Escolha sua Classe</Text>
-      <Text style={styles.subtitle}>
-        Cada classe tem habilidades e bônus únicos
-      </Text>
+      <Text style={styles.subtitle}>Cada classe tem habilidades e bonus unicos</Text>
 
       <ScrollView style={styles.classesScroll} showsVerticalScrollIndicator={false}>
         {Object.values(CLASSES_INFO).map((classInfo) => (
@@ -108,18 +99,18 @@ const CharacterCreationScreen = ({ navigation }) => {
               </View>
 
               <View style={styles.bonusesContainer}>
-                <Text style={styles.bonusesTitle}>Bônus:</Text>
+                <Text style={styles.bonusesTitle}>Bonus:</Text>
                 <View style={styles.bonusesGrid}>
                   {classInfo.bonuses.vision > 0 && (
                     <View style={styles.bonusItem}>
                       <Text style={styles.bonusIcon}>🔮</Text>
-                      <Text style={styles.bonusText}>+{classInfo.bonuses.vision} Visão</Text>
+                      <Text style={styles.bonusText}>+{classInfo.bonuses.vision} Visao</Text>
                     </View>
                   )}
                   {classInfo.bonuses.management > 0 && (
                     <View style={styles.bonusItem}>
                       <Text style={styles.bonusIcon}>📊</Text>
-                      <Text style={styles.bonusText}>+{classInfo.bonuses.management} Gestão</Text>
+                      <Text style={styles.bonusText}>+{classInfo.bonuses.management} Gestao</Text>
                     </View>
                   )}
                   {classInfo.bonuses.marketing > 0 && (
@@ -131,13 +122,13 @@ const CharacterCreationScreen = ({ navigation }) => {
                   {classInfo.bonuses.finance > 0 && (
                     <View style={styles.bonusItem}>
                       <Text style={styles.bonusIcon}>💰</Text>
-                      <Text style={styles.bonusText}>+{classInfo.bonuses.finance} Finanças</Text>
+                      <Text style={styles.bonusText}>+{classInfo.bonuses.finance} Financas</Text>
                     </View>
                   )}
                   {classInfo.bonuses.leadership > 0 && (
                     <View style={styles.bonusItem}>
                       <Text style={styles.bonusIcon}>👥</Text>
-                      <Text style={styles.bonusText}>+{classInfo.bonuses.leadership} Liderança</Text>
+                      <Text style={styles.bonusText}>+{classInfo.bonuses.leadership} Lideranca</Text>
                     </View>
                   )}
                 </View>
@@ -170,130 +161,132 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    padding: 20,
-    paddingTop: 80,
+    padding: 16,
+    paddingTop: 64,
+    flexGrow: 1,
   },
   stepContainer: {
     flex: 1,
   },
   title: {
-    fontSize: 32,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#FFFFFF',
+    marginBottom: 6,
     textAlign: 'center',
-    marginBottom: 12,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 13,
     color: '#94A3B8',
+    marginBottom: 19,
     textAlign: 'center',
-    marginBottom: 40,
+    lineHeight: 18,
   },
   input: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 16,
-    padding: 20,
-    fontSize: 18,
-    color: '#FFFFFF',
+    padding: 13,
+    borderRadius: 10,
     borderWidth: 2,
     borderColor: 'rgba(139, 92, 246, 0.3)',
-    marginBottom: 24,
+    color: '#FFFFFF',
+    fontSize: 13,
+    marginBottom: 19,
   },
   continueButton: {
     width: '100%',
   },
   buttonDisabled: {
-    opacity: 0.5,
+    opacity: 0.6,
   },
   buttonGradient: {
-    paddingVertical: 18,
-    borderRadius: 16,
+    paddingVertical: 13,
+    borderRadius: 10,
     alignItems: 'center',
   },
   buttonText: {
-    fontSize: 18,
+    fontSize: 13,
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
   classesScroll: {
     flex: 1,
+    marginBottom: 13,
   },
   classCard: {
-    marginBottom: 16,
-    borderRadius: 20,
+    marginBottom: 13,
+    borderRadius: 16,
     overflow: 'hidden',
   },
   classCardSelected: {
-    borderWidth: 3,
+    borderWidth: 2,
     borderColor: '#8B5CF6',
   },
   classCardGradient: {
-    padding: 20,
+    padding: 16,
   },
   classHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 10,
   },
   classEmoji: {
-    fontSize: 48,
-    marginRight: 16,
+    fontSize: 38,
+    marginRight: 12,
   },
   classInfo: {
     flex: 1,
   },
   className: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    marginBottom: 4,
+    marginBottom: 3,
   },
   classDescription: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#E2E8F0',
-    lineHeight: 20,
+    lineHeight: 18,
   },
   bonusesContainer: {
-    marginTop: 12,
+    marginTop: 10,
   },
   bonusesTitle: {
-    fontSize: 14,
+    fontSize: 11,
     fontWeight: '600',
     color: '#94A3B8',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   bonusesGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: 6,
   },
   bonusItem: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'rgba(139, 92, 246, 0.2)',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 12,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 10,
   },
   bonusIcon: {
-    fontSize: 14,
-    marginRight: 4,
+    fontSize: 11,
+    marginRight: 3,
   },
   bonusText: {
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: '600',
     color: '#FFFFFF',
   },
   selectedBadge: {
     backgroundColor: '#10B981',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 12,
+    paddingVertical: 6,
+    paddingHorizontal: 13,
+    borderRadius: 10,
     alignSelf: 'flex-start',
-    marginTop: 12,
+    marginTop: 10,
   },
   selectedText: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
