@@ -59,7 +59,7 @@ export default function ClassAndSchoolSelectionScreen({ navigation, route }) {
         >
           <Ionicons name="arrow-back" size={20} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.title}>Informações Acadêmicas</Text>
+        <Text style={styles.title}>Informações Escolares</Text>
         <Text style={styles.subtitle}>Complete seu perfil para acessar o conteúdo</Text>
       </View>
 

@@ -12,11 +12,12 @@ import { Ionicons } from '@expo/vector-icons';
 import Logo from '../components/Logo';
 
 const LoginScreen = ({ navigation }) => {
-  const [codigoEscolar, setCodigoEscolar] = useState('');
-  const [email, setEmail] = useState('');
+  const [emailInstitucional, setEmailInstitucional] = useState('');
+  const [senha, setSenha] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = () => {
-    if (codigoEscolar && email) {
+    if (emailInstitucional && senha) {
       navigation.replace('MainHub');
     }
   };
@@ -38,35 +39,48 @@ const LoginScreen = ({ navigation }) => {
 
       <View style={styles.formContainer}>
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>🏫 Código da Escola</Text>
+          <Text style={styles.label}>📧 Email Institucional</Text>
           <TextInput
             style={styles.input}
-            placeholder="Ex: ESC2024"
-            value={codigoEscolar}
-            onChangeText={setCodigoEscolar}
-            autoCapitalize="characters"
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>� E-mail</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Digite seu e-mail"
-            value={email}
-            onChangeText={setEmail}
+            placeholder="Digite seu email institucional"
+            value={emailInstitucional}
+            onChangeText={setEmailInstitucional}
             keyboardType="email-address"
             autoCapitalize="none"
           />
         </View>
 
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>🔐 Senha</Text>
+          <View style={styles.passwordInputContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder="Digite sua senha"
+              value={senha}
+              onChangeText={setSenha}
+              secureTextEntry={!showPassword}
+              autoCapitalize="none"
+            />
+            <TouchableOpacity 
+              onPress={() => setShowPassword(!showPassword)}
+              style={styles.eyeButton}
+            >
+              <Ionicons 
+                name={showPassword ? "eye" : "eye-off"} 
+                size={20} 
+                color="#6B7280" 
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+
         <TouchableOpacity 
           style={[
             styles.loginButton,
-            (!codigoEscolar || !email) && styles.loginButtonDisabled
+            (!emailInstitucional || !senha) && styles.loginButtonDisabled
           ]}
           onPress={handleLogin}
-          disabled={!codigoEscolar || !email}
+          disabled={!emailInstitucional || !senha}
         >
           <Text style={styles.loginButtonText}>
             🚀 Iniciar Jornada
@@ -220,6 +234,28 @@ const styles = StyleSheet.create({
     fontSize: 11,
     marginBottom: 24,
     paddingHorizontal: 16,
+  },
+  passwordInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#E5E7EB',
+    paddingRight: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 1,
+  },
+  passwordInput: {
+    flex: 1,
+    padding: 12,
+    fontSize: 13,
+  },
+  eyeButton: {
+    padding: 8,
   },
 });
 
