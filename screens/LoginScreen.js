@@ -12,11 +12,12 @@ import { Ionicons } from '@expo/vector-icons';
 import Logo from '../components/Logo';
 
 const LoginScreen = ({ navigation }) => {
-  const [codigoEscolar, setCodigoEscolar] = useState('');
-  const [email, setEmail] = useState('');
+  const [emailInstitucional, setEmailInstitucional] = useState('');
+  const [senha, setSenha] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = () => {
-    if (codigoEscolar && email) {
+    if (emailInstitucional && senha) {
       navigation.replace('MainHub');
     }
   };
@@ -28,7 +29,7 @@ const LoginScreen = ({ navigation }) => {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Ionicons name="arrow-back" size={24} color="#fff" />
+          <Ionicons name="arrow-back" size={20} color="#fff" />
         </TouchableOpacity>
         <Logo size="medium" showText={true} />
         <Text style={styles.welcomeText}>
@@ -38,35 +39,48 @@ const LoginScreen = ({ navigation }) => {
 
       <View style={styles.formContainer}>
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>🏫 Código da Escola</Text>
+          <Text style={styles.label}>📧 Email Institucional</Text>
           <TextInput
             style={styles.input}
-            placeholder="Ex: ESC2024"
-            value={codigoEscolar}
-            onChangeText={setCodigoEscolar}
-            autoCapitalize="characters"
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>� E-mail</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Digite seu e-mail"
-            value={email}
-            onChangeText={setEmail}
+            placeholder="Digite seu email institucional"
+            value={emailInstitucional}
+            onChangeText={setEmailInstitucional}
             keyboardType="email-address"
             autoCapitalize="none"
           />
         </View>
 
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>🔐 Senha</Text>
+          <View style={styles.passwordInputContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder="Digite sua senha"
+              value={senha}
+              onChangeText={setSenha}
+              secureTextEntry={!showPassword}
+              autoCapitalize="none"
+            />
+            <TouchableOpacity 
+              onPress={() => setShowPassword(!showPassword)}
+              style={styles.eyeButton}
+            >
+              <Ionicons 
+                name={showPassword ? "eye" : "eye-off"} 
+                size={20} 
+                color="#6B7280" 
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+
         <TouchableOpacity 
           style={[
             styles.loginButton,
-            (!codigoEscolar || !email) && styles.loginButtonDisabled
+            (!emailInstitucional || !senha) && styles.loginButtonDisabled
           ]}
           onPress={handleLogin}
-          disabled={!codigoEscolar || !email}
+          disabled={!emailInstitucional || !senha}
         >
           <Text style={styles.loginButtonText}>
             🚀 Iniciar Jornada
@@ -96,51 +110,51 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    paddingTop: 40,
-    paddingBottom: 30,
+    paddingTop: 32,
+    paddingBottom: 24,
     backgroundColor: '#0F172A',
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 5,
+    shadowRadius: 8,
+    elevation: 4,
   },
   welcomeText: {
-    fontSize: 16,
+    fontSize: 13,
     color: '#6B7280',
     textAlign: 'center',
-    marginTop: 10,
-    paddingHorizontal: 20,
+    marginTop: 8,
+    paddingHorizontal: 16,
   },
   formContainer: {
-    padding: 25,
+    padding: 20,
   },
   inputGroup: {
-    marginBottom: 20,
+    marginBottom: 16,
   },
   label: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: '600',
     color: '#374151',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   input: {
     backgroundColor: 'white',
-    borderRadius: 15,
-    padding: 15,
-    fontSize: 16,
+    borderRadius: 12,
+    padding: 12,
+    fontSize: 13,
     borderWidth: 2,
     borderColor: '#E5E7EB',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
-    shadowRadius: 5,
-    elevation: 2,
+    shadowRadius: 4,
+    elevation: 1,
   },
   avatarSection: {
-    marginBottom: 30,
+    marginBottom: 24,
   },
   avatarGrid: {
     flexDirection: 'row',
@@ -150,43 +164,43 @@ const styles = StyleSheet.create({
   avatarCard: {
     width: '30%',
     backgroundColor: 'white',
-    borderRadius: 15,
-    padding: 15,
+    borderRadius: 12,
+    padding: 12,
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 12,
     borderWidth: 2,
     borderColor: '#E5E7EB',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
-    shadowRadius: 5,
-    elevation: 2,
+    shadowRadius: 4,
+    elevation: 1,
   },
   selectedAvatar: {
     borderColor: '#10B981',
     backgroundColor: '#F0FDF4',
   },
   avatarEmoji: {
-    fontSize: 30,
-    marginBottom: 5,
+    fontSize: 24,
+    marginBottom: 4,
   },
   avatarName: {
-    fontSize: 12,
+    fontSize: 10,
     color: '#6B7280',
     textAlign: 'center',
     fontWeight: '500',
   },
   loginButton: {
     backgroundColor: '#10B981',
-    borderRadius: 25,
-    padding: 18,
+    borderRadius: 20,
+    padding: 14,
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 16,
     shadowColor: '#10B981',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 5,
+    shadowRadius: 8,
+    elevation: 4,
   },
   loginButtonDisabled: {
     backgroundColor: '#D1D5DB',
@@ -195,31 +209,53 @@ const styles = StyleSheet.create({
   },
   loginButtonText: {
     color: 'white',
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
   },
   socialButtons: {
-    marginBottom: 20,
+    marginBottom: 16,
   },
   googleButton: {
     backgroundColor: 'white',
-    borderRadius: 25,
-    padding: 15,
+    borderRadius: 20,
+    padding: 12,
     alignItems: 'center',
     borderWidth: 2,
     borderColor: '#E5E7EB',
   },
   socialButtonText: {
-    fontSize: 16,
+    fontSize: 13,
     color: '#6B7280',
     fontWeight: '600',
   },
   footerText: {
     textAlign: 'center',
     color: '#9CA3AF',
-    fontSize: 14,
-    marginBottom: 30,
-    paddingHorizontal: 20,
+    fontSize: 11,
+    marginBottom: 24,
+    paddingHorizontal: 16,
+  },
+  passwordInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#E5E7EB',
+    paddingRight: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 1,
+  },
+  passwordInput: {
+    flex: 1,
+    padding: 12,
+    fontSize: 13,
+  },
+  eyeButton: {
+    padding: 8,
   },
 });
 

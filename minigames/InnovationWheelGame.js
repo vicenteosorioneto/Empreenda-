@@ -96,7 +96,8 @@ const InnovationWheelGame = ({ navigation }) => {
 
   const handleQuizAnswer = (selectedOption) => {
     const currentQuestion = quizQuestions[currentQuizQuestion];
-    const isCorrect = selectedOption === currentQuestion.correctAnswer;
+    const selectedOptionData = currentQuestion.options.find(opt => opt.id === selectedOption);
+    const isCorrect = selectedOptionData && selectedOptionData.correct;
     
     if (isCorrect) {
       setQuizScore(quizScore + 100);
@@ -160,14 +161,14 @@ const InnovationWheelGame = ({ navigation }) => {
             <Text style={styles.quizQuestion}>{question.question}</Text>
             
             <View style={styles.quizOptionsContainer}>
-              {['a', 'b', 'c', 'd'].map((option) => (
+              {question.options && question.options.map((option) => (
                 <TouchableOpacity
-                  key={option}
+                  key={option.id}
                   style={styles.quizOption}
-                  onPress={() => handleQuizAnswer(option)}
+                  onPress={() => handleQuizAnswer(option.id)}
                 >
-                  <Text style={styles.quizOptionLetter}>{option.toUpperCase()}</Text>
-                  <Text style={styles.quizOptionText}>{question[option]}</Text>
+                  <Text style={styles.quizOptionLetter}>{option.id.toUpperCase()}</Text>
+                  <Text style={styles.quizOptionText}>{option.text}</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -249,7 +250,7 @@ const InnovationWheelGame = ({ navigation }) => {
                     {
                       transform: [
                         { rotate: `${rotation}deg` },
-                        { translateY: -60 },
+                        { translateY: -48 },
                       ],
                     },
                   ]}
@@ -261,7 +262,7 @@ const InnovationWheelGame = ({ navigation }) => {
 
             {/* Center circle */}
             <View style={styles.wheelCenter}>
-              <RotatingBadge emoji="🎡" size={50} />
+              <RotatingBadge emoji="🎡" size={40} />
             </View>
           </View>
         </Animated.View>
@@ -359,83 +360,83 @@ const InnovationWheelGame = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: THEME.spacing.lg,
-    paddingHorizontal: THEME.spacing.lg,
+    paddingVertical: THEME.spacing.md,
+    paddingHorizontal: THEME.spacing.md,
   },
   header: {
-    marginBottom: THEME.spacing.xl,
+    marginBottom: THEME.spacing.lg,
   },
   backButton: {
     color: THEME.colors.textInverted,
-    fontSize: THEME.fontSize.base,
+    fontSize: THEME.fontSize.sm,
     fontWeight: THEME.fontWeight.semibold,
-    marginBottom: THEME.spacing.md,
+    marginBottom: THEME.spacing.sm,
   },
   title: {
     color: THEME.colors.textInverted,
-    fontSize: THEME.fontSize.xxl,
+    fontSize: THEME.fontSize.xl,
     fontWeight: THEME.fontWeight.bold,
-    marginBottom: THEME.spacing.sm,
+    marginBottom: THEME.spacing.xs,
   },
   subTitle: {
     color: 'rgba(255,255,255,0.7)',
-    fontSize: THEME.fontSize.base,
+    fontSize: THEME.fontSize.sm,
   },
 
   // Wheel
   wheelContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: THEME.spacing.xl,
-    height: 280,
+    marginVertical: THEME.spacing.lg,
+    height: 224,
   },
   pointerContainer: {
     position: 'absolute',
-    top: -10,
+    top: -8,
     zIndex: 10,
   },
   pointer: {
     width: 0,
     height: 0,
-    borderLeftWidth: 10,
-    borderRightWidth: 10,
-    borderTopWidth: 15,
+    borderLeftWidth: 8,
+    borderRightWidth: 8,
+    borderTopWidth: 12,
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
     borderTopColor: THEME.colors.neonYellow,
   },
   wheelWrapper: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
+    width: 160,
+    height: 160,
+    borderRadius: 80,
   },
   wheel: {
     width: '100%',
     height: '100%',
-    borderRadius: 100,
+    borderRadius: 80,
     overflow: 'hidden',
-    borderWidth: 3,
+    borderWidth: 2,
     borderColor: 'rgba(255,255,255,0.3)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   wheelSegment: {
     position: 'absolute',
-    width: 60,
-    height: 80,
+    width: 48,
+    height: 64,
     borderRadius: THEME.borderRadius.md,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 2,
+    borderWidth: 1.5,
   },
   segmentEmoji: {
-    fontSize: 24,
+    fontSize: 19,
   },
   wheelCenter: {
     position: 'absolute',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     backgroundColor: 'rgba(255,255,255,0.2)',
     alignItems: 'center',
     justifyContent: 'center',
@@ -444,60 +445,60 @@ const styles = StyleSheet.create({
   // Category Info
   categoryInfo: {
     backgroundColor: 'rgba(255,255,255,0.1)',
-    borderRadius: THEME.borderRadius.lg,
-    padding: THEME.spacing.lg,
+    borderRadius: THEME.borderRadius.md,
+    padding: THEME.spacing.md,
     alignItems: 'center',
-    marginBottom: THEME.spacing.lg,
+    marginBottom: THEME.spacing.md,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.2)',
   },
   categoryEmoji: {
-    fontSize: 40,
-    marginBottom: THEME.spacing.md,
+    fontSize: 32,
+    marginBottom: THEME.spacing.sm,
   },
   categoryName: {
     color: THEME.colors.textInverted,
-    fontSize: THEME.fontSize.lg,
+    fontSize: THEME.fontSize.base,
     fontWeight: THEME.fontWeight.bold,
-    marginBottom: THEME.spacing.sm,
+    marginBottom: THEME.spacing.xs,
   },
   categoryDescription: {
     color: 'rgba(255,255,255,0.7)',
-    fontSize: THEME.fontSize.sm,
+    fontSize: THEME.fontSize.xs,
     textAlign: 'center',
   },
 
   // Buttons
   spinButton: {
-    marginBottom: THEME.spacing.lg,
-    borderRadius: THEME.borderRadius.lg,
+    marginBottom: THEME.spacing.md,
+    borderRadius: THEME.borderRadius.md,
     overflow: 'hidden',
   },
   spinButtonDisabled: {
     opacity: 0.7,
   },
   spinButtonGradient: {
-    paddingVertical: THEME.spacing.lg,
+    paddingVertical: THEME.spacing.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
   spinButtonText: {
     color: THEME.colors.textInverted,
-    fontSize: THEME.fontSize.lg,
+    fontSize: THEME.fontSize.base,
     fontWeight: THEME.fontWeight.bold,
   },
   nextButton: {
     backgroundColor: 'rgba(255,255,255,0.2)',
-    borderRadius: THEME.borderRadius.lg,
-    paddingVertical: THEME.spacing.lg,
+    borderRadius: THEME.borderRadius.md,
+    paddingVertical: THEME.spacing.md,
     alignItems: 'center',
-    marginBottom: THEME.spacing.lg,
+    marginBottom: THEME.spacing.md,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.3)',
   },
   nextButtonText: {
     color: THEME.colors.textInverted,
-    fontSize: THEME.fontSize.base,
+    fontSize: THEME.fontSize.sm,
     fontWeight: THEME.fontWeight.bold,
   },
 
@@ -505,7 +506,7 @@ const styles = StyleSheet.create({
   statsBar: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: THEME.spacing.lg,
+    marginBottom: THEME.spacing.md,
   },
   statItem: {
     alignItems: 'center',
@@ -517,32 +518,32 @@ const styles = StyleSheet.create({
   },
   statValue: {
     color: THEME.colors.textInverted,
-    fontSize: THEME.fontSize.base,
+    fontSize: THEME.fontSize.sm,
     fontWeight: THEME.fontWeight.bold,
   },
 
   // Quiz Styles
   quizButton: {
-    marginBottom: THEME.spacing.lg,
-    borderRadius: THEME.borderRadius.lg,
+    marginBottom: THEME.spacing.md,
+    borderRadius: THEME.borderRadius.md,
     overflow: 'hidden',
   },
   quizContainer: {
     flex: 1,
-    padding: THEME.spacing.lg,
+    padding: THEME.spacing.md,
   },
   quizCard: {
     backgroundColor: 'rgba(255,255,255,0.95)',
-    borderRadius: THEME.borderRadius.xl,
-    padding: THEME.spacing.xl,
-    marginBottom: THEME.spacing.lg,
+    borderRadius: THEME.borderRadius.lg,
+    padding: THEME.spacing.lg,
+    marginBottom: THEME.spacing.md,
   },
   quizQuestion: {
-    fontSize: THEME.fontSize.xl,
+    fontSize: THEME.fontSize.lg,
     fontWeight: THEME.fontWeight.bold,
     color: THEME.colors.text,
-    marginBottom: THEME.spacing.xl,
-    lineHeight: 28,
+    marginBottom: THEME.spacing.lg,
+    lineHeight: 22,
   },
   quizOptionsContainer: {
     marginBottom: THEME.spacing.lg,
@@ -551,47 +552,47 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: THEME.colors.background,
-    borderRadius: THEME.borderRadius.lg,
-    padding: THEME.spacing.lg,
-    marginBottom: THEME.spacing.md,
+    borderRadius: THEME.borderRadius.md,
+    padding: THEME.spacing.md,
+    marginBottom: THEME.spacing.sm,
     borderWidth: 2,
     borderColor: 'rgba(139, 92, 246, 0.3)',
   },
   quizOptionLetter: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     backgroundColor: '#8B5CF6',
     color: 'white',
-    fontSize: THEME.fontSize.base,
+    fontSize: THEME.fontSize.sm,
     fontWeight: THEME.fontWeight.bold,
     textAlign: 'center',
-    lineHeight: 36,
-    marginRight: THEME.spacing.md,
+    lineHeight: 30,
+    marginRight: THEME.spacing.sm,
   },
   quizOptionText: {
     flex: 1,
-    fontSize: THEME.fontSize.base,
+    fontSize: THEME.fontSize.sm,
     color: THEME.colors.text,
-    lineHeight: 22,
+    lineHeight: 18,
   },
   quizScoreContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: THEME.spacing.lg,
-    paddingTop: THEME.spacing.lg,
+    marginTop: THEME.spacing.md,
+    paddingTop: THEME.spacing.md,
     borderTopWidth: 1,
     borderTopColor: 'rgba(139, 92, 246, 0.2)',
   },
   quizScoreLabel: {
-    fontSize: THEME.fontSize.lg,
+    fontSize: THEME.fontSize.base,
     fontWeight: THEME.fontWeight.semibold,
     color: THEME.colors.text,
-    marginRight: THEME.spacing.sm,
+    marginRight: THEME.spacing.xs,
   },
   quizScoreValue: {
-    fontSize: THEME.fontSize.xl,
+    fontSize: THEME.fontSize.lg,
     fontWeight: THEME.fontWeight.bold,
     color: '#8B5CF6',
   },

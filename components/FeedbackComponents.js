@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Animated, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Animated, TouchableOpacity, Vibration, Platform } from 'react-native';
 import { THEME } from '../utils/theme';
 
 /**
@@ -21,6 +21,12 @@ export const FeedbackOverlay = ({
   useEffect(() => {
     if (visible) {
       setDisplay(true);
+      
+      // Vibrar para feedback tátil (conquistas e sucessos)
+      if ((type === 'achievement' || type === 'success') && (Platform.OS === 'ios' || Platform.OS === 'android')) {
+        Vibration.vibrate(type === 'achievement' ? [0, 50, 30, 50] : 50);
+      }
+
       Animated.parallel([
         Animated.spring(scaleAnimation, {
           toValue: 1,
@@ -230,6 +236,11 @@ export const AchievementPopup = ({
 
   useEffect(() => {
     if (visible) {
+      // Vibrar quando conquista aparece (só em dispositivos físicos)
+      if (Platform.OS === 'ios' || Platform.OS === 'android') {
+        Vibration.vibrate([0, 100, 50, 100]); // Pattern: delay, vibrate, delay, vibrate
+      }
+
       Animated.spring(scaleAnimation, {
         toValue: 1,
         friction: 7,

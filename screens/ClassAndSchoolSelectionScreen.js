@@ -57,9 +57,9 @@ export default function ClassAndSchoolSelectionScreen({ navigation, route }) {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Ionicons name="arrow-back" size={24} color="#fff" />
+          <Ionicons name="arrow-back" size={20} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.title}>Informações Acadêmicas</Text>
+        <Text style={styles.title}>Informações Escolares</Text>
         <Text style={styles.subtitle}>Complete seu perfil para acessar o conteúdo</Text>
       </View>
 
@@ -89,7 +89,7 @@ export default function ClassAndSchoolSelectionScreen({ navigation, route }) {
                 >
                   {selectedClass === classItem.id && (
                     <View style={styles.selectedBadge}>
-                      <Ionicons name="checkmark-circle" size={24} color="#fff" />
+                      <Ionicons name="checkmark-circle" size={19} color="#fff" />
                     </View>
                   )}
                   <Text style={styles.classLabel}>{classItem.label}</Text>
@@ -104,7 +104,7 @@ export default function ClassAndSchoolSelectionScreen({ navigation, route }) {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>ID da Escola</Text>
           <View style={styles.inputContainer}>
-            <Ionicons name="business" size={20} color="#a8b2d1" style={styles.inputIcon} />
+            <Ionicons name="business" size={16} color="#a8b2d1" style={styles.inputIcon} />
             <TextInput
               style={styles.input}
               placeholder="Digite o ID da escola"
@@ -123,7 +123,7 @@ export default function ClassAndSchoolSelectionScreen({ navigation, route }) {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Código da Turma</Text>
           <View style={styles.inputContainer}>
-            <Ionicons name="key" size={20} color="#a8b2d1" style={styles.inputIcon} />
+            <Ionicons name="key" size={16} color="#a8b2d1" style={styles.inputIcon} />
             <TextInput
               style={styles.input}
               placeholder="Digite o código da turma"
@@ -151,7 +151,7 @@ export default function ClassAndSchoolSelectionScreen({ navigation, route }) {
             end={{ x: 1, y: 0 }}
           >
             <Text style={styles.continueButtonText}>Continuar</Text>
-            <Ionicons name="arrow-forward" size={20} color="#fff" />
+            <Ionicons name="arrow-forward" size={16} color="#fff" />
           </LinearGradient>
         </TouchableOpacity>
       </View>
@@ -162,43 +162,43 @@ export default function ClassAndSchoolSelectionScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 50,
+    paddingTop: 40,
   },
   header: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
+    paddingHorizontal: 16,
+    marginBottom: 16,
   },
   backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 16,
   },
   title: {
-    fontSize: 28,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 13,
     color: '#a8b2d1',
   },
   scrollContent: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
   section: {
-    marginBottom: 30,
+    marginBottom: 24,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 15,
+    marginBottom: 12,
   },
   classGrid: {
     flexDirection: 'row',
@@ -207,20 +207,20 @@ const styles = StyleSheet.create({
   },
   classWrapper: {
     width: '48%',
-    marginBottom: 15,
+    marginBottom: 12,
   },
   classCard: {
-    borderRadius: 15,
-    padding: 20,
+    borderRadius: 12,
+    padding: 16,
     alignItems: 'center',
-    minHeight: 100,
+    minHeight: 80,
     justifyContent: 'center',
     position: 'relative',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
+    shadowRadius: 6,
+    elevation: 6,
   },
   selectedCard: {
     borderWidth: 3,
@@ -228,46 +228,46 @@ const styles = StyleSheet.create({
   },
   selectedBadge: {
     position: 'absolute',
-    top: 8,
-    right: 8,
+    top: 6,
+    right: 6,
   },
   classLabel: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 4,
+    marginBottom: 3,
   },
   classSubtitle: {
-    fontSize: 12,
+    fontSize: 10,
     color: '#f0f0f0',
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 15,
-    paddingHorizontal: 15,
+    borderRadius: 12,
+    paddingHorizontal: 12,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   inputIcon: {
-    marginRight: 10,
+    marginRight: 8,
   },
   input: {
     flex: 1,
     color: '#fff',
-    fontSize: 16,
-    paddingVertical: 15,
+    fontSize: 13,
+    paddingVertical: 12,
   },
   helperText: {
-    fontSize: 13,
+    fontSize: 10,
     color: '#8892b0',
-    marginTop: 8,
+    marginTop: 6,
     fontStyle: 'italic',
   },
   footer: {
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
   },
   continueButton: {
@@ -278,11 +278,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 16,
-    gap: 10,
+    paddingVertical: 13,
+    gap: 8,
   },
   continueButtonText: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#fff',
   },

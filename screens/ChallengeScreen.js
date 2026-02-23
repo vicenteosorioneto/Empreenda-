@@ -133,27 +133,27 @@ export default function ChallengeScreen({ navigation }) {
       <LinearGradient colors={['#1a1a2e', '#16213e', '#0f3460']} style={styles.container}>
         <NavigationHeader title="Desafio" />
         <View style={styles.centerContainer}>
-          <Ionicons name="trophy" size={80} color="#FFD700" />
+          <Ionicons name="trophy" size={64} color="#FFD700" />
           <Text style={styles.waitingTitle}>Desafio Empreendedor</Text>
           <Text style={styles.waitingSubtitle}>10 perguntas V/F difíceis</Text>
           <View style={styles.infoCard}>
             <View style={styles.infoRow}>
-              <Ionicons name="time" size={24} color="#43e97b" />
+              <Ionicons name="time" size={19} color="#43e97b" />
               <Text style={styles.infoText}>15 minutos para completar</Text>
             </View>
             <View style={styles.infoRow}>
-              <Ionicons name="alert-circle" size={24} color="#f5576c" />
+              <Ionicons name="alert-circle" size={19} color="#f5576c" />
               <Text style={styles.infoText}>Perguntas muito difíceis</Text>
             </View>
             <View style={styles.infoRow}>
-              <Ionicons name="star" size={24} color="#FFD700" />
+              <Ionicons name="star" size={19} color="#FFD700" />
               <Text style={styles.infoText}>100 pontos por acerto</Text>
             </View>
           </View>
           <TouchableOpacity style={styles.startButton} onPress={startChallenge}>
             <LinearGradient colors={['#43e97b', '#38f9d7']} style={styles.startButtonGradient}>
               <Text style={styles.startButtonText}>Iniciar Desafio</Text>
-              <Ionicons name="arrow-forward" size={24} color="#fff" />
+              <Ionicons name="arrow-forward" size={19} color="#fff" />
             </LinearGradient>
           </TouchableOpacity>
         </View>
@@ -215,11 +215,11 @@ export default function ChallengeScreen({ navigation }) {
           </View>
         </View>
         <View style={styles.timerBox}>
-          <Ionicons name="time" size={20} color={timeColor} />
+          <Ionicons name="time" size={16} color={timeColor} />
           <Text style={[styles.timerText, { color: timeColor }]}>{formatTime(timeLeft)}</Text>
         </View>
         <View style={styles.scoreBox}>
-          <Ionicons name="star" size={20} color="#FFD700" />
+          <Ionicons name="star" size={16} color="#FFD700" />
           <Text style={styles.scoreText}>{score}</Text>
         </View>
       </View>
@@ -227,7 +227,7 @@ export default function ChallengeScreen({ navigation }) {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.questionCard}>
           <View style={styles.questionHeader}>
-            <Ionicons name="help-circle" size={24} color="#667eea" />
+            <Ionicons name="help-circle" size={19} color="#667eea" />
             <Text style={styles.questionNumber}>Questão {currentQuestion + 1}</Text>
           </View>
           <Text style={styles.questionText}>{question.question}</Text>
@@ -253,12 +253,12 @@ export default function ChallengeScreen({ navigation }) {
             >
               <Ionicons 
                 name="checkmark-circle" 
-                size={32} 
+                size={26} 
                 color={selectedAnswer !== null && question.answer === true ? '#fff' : '#43e97b'} 
               />
               <Text style={styles.answerText}>VERDADEIRO</Text>
               {selectedAnswer !== null && question.answer === true && (
-                <Ionicons name="checkmark" size={28} color="#fff" />
+                <Ionicons name="checkmark" size={22} color="#fff" />
               )}
             </LinearGradient>
           </TouchableOpacity>
@@ -282,12 +282,12 @@ export default function ChallengeScreen({ navigation }) {
             >
               <Ionicons 
                 name="close-circle" 
-                size={32} 
+                size={26} 
                 color={selectedAnswer !== null && question.answer === false ? '#fff' : '#f5576c'} 
               />
               <Text style={styles.answerText}>FALSO</Text>
               {selectedAnswer !== null && question.answer === false && (
-                <Ionicons name="checkmark" size={28} color="#fff" />
+                <Ionicons name="checkmark" size={22} color="#fff" />
               )}
             </LinearGradient>
           </TouchableOpacity>
@@ -295,7 +295,7 @@ export default function ChallengeScreen({ navigation }) {
 
         {selectedAnswer !== null && (
           <View style={styles.explanationCard}>
-            <Ionicons name="information-circle" size={24} color="#667eea" />
+            <Ionicons name="information-circle" size={19} color="#667eea" />
             <View style={styles.explanationContent}>
               <Text style={styles.explanationTitle}>Explicação:</Text>
               <Text style={styles.explanationText}>{question.explanation}</Text>
@@ -309,50 +309,50 @@ export default function ChallengeScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  centerContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20 },
-  waitingTitle: { fontSize: 32, fontWeight: 'bold', color: '#fff', marginTop: 20, marginBottom: 10 },
-  waitingSubtitle: { fontSize: 18, color: '#a8b2d1', marginBottom: 30 },
-  infoCard: { backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: 20, padding: 25, marginBottom: 30, width: '100%' },
-  infoRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 15, gap: 15 },
-  infoText: { fontSize: 16, color: '#fff', flex: 1 },
-  startButton: { width: '100%', borderRadius: 15, overflow: 'hidden' },
-  startButtonGradient: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingVertical: 18, gap: 10 },
-  startButtonText: { fontSize: 20, fontWeight: 'bold', color: '#fff' },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 60, paddingBottom: 20 },
-  progressInfo: { flex: 1, marginRight: 15 },
-  progressText: { fontSize: 14, color: '#a8b2d1', marginBottom: 5, fontWeight: '600' },
-  progressBar: { height: 6, backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: 3, overflow: 'hidden' },
+  centerContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 16 },
+  waitingTitle: { fontSize: 26, fontWeight: 'bold', color: '#fff', marginTop: 16, marginBottom: 8 },
+  waitingSubtitle: { fontSize: 14, color: '#a8b2d1', marginBottom: 24 },
+  infoCard: { backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: 16, padding: 20, marginBottom: 24, width: '100%' },
+  infoRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 12, gap: 12 },
+  infoText: { fontSize: 13, color: '#fff', flex: 1 },
+  startButton: { width: '100%', borderRadius: 12, overflow: 'hidden' },
+  startButtonGradient: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingVertical: 14, gap: 8 },
+  startButtonText: { fontSize: 16, fontWeight: 'bold', color: '#fff' },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingTop: 48, paddingBottom: 16 },
+  progressInfo: { flex: 1, marginRight: 12 },
+  progressText: { fontSize: 11, color: '#a8b2d1', marginBottom: 4, fontWeight: '600' },
+  progressBar: { height: 5, backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: 3, overflow: 'hidden' },
   progressFill: { height: '100%', backgroundColor: '#667eea', borderRadius: 3 },
-  timerBox: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255, 255, 255, 0.1)', paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20, gap: 6, marginRight: 10 },
-  timerText: { fontSize: 16, fontWeight: 'bold' },
-  scoreBox: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255, 215, 0, 0.2)', paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20, gap: 6 },
-  scoreText: { fontSize: 16, fontWeight: 'bold', color: '#FFD700' },
-  content: { flex: 1, paddingHorizontal: 20 },
-  questionCard: { backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: 20, padding: 25, marginBottom: 25 },
-  questionHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 15, gap: 10 },
-  questionNumber: { fontSize: 16, fontWeight: 'bold', color: '#667eea' },
-  questionText: { fontSize: 20, fontWeight: 'bold', color: '#fff', lineHeight: 30 },
-  answersContainer: { gap: 15, marginBottom: 25 },
-  answerButton: { borderRadius: 20, overflow: 'hidden' },
-  answerGradient: { flexDirection: 'row', alignItems: 'center', padding: 25, gap: 15 },
-  answerText: { flex: 1, fontSize: 20, fontWeight: 'bold', color: '#fff' },
-  explanationCard: { flexDirection: 'row', backgroundColor: 'rgba(102, 126, 234, 0.2)', borderRadius: 15, padding: 20, gap: 15, marginBottom: 30 },
+  timerBox: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255, 255, 255, 0.1)', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16, gap: 5, marginRight: 8 },
+  timerText: { fontSize: 13, fontWeight: 'bold' },
+  scoreBox: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255, 215, 0, 0.2)', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16, gap: 5 },
+  scoreText: { fontSize: 13, fontWeight: 'bold', color: '#FFD700' },
+  content: { flex: 1, paddingHorizontal: 16 },
+  questionCard: { backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: 16, padding: 20, marginBottom: 20 },
+  questionHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 12, gap: 8 },
+  questionNumber: { fontSize: 13, fontWeight: 'bold', color: '#667eea' },
+  questionText: { fontSize: 16, fontWeight: 'bold', color: '#fff', lineHeight: 24 },
+  answersContainer: { gap: 12, marginBottom: 20 },
+  answerButton: { borderRadius: 16, overflow: 'hidden' },
+  answerGradient: { flexDirection: 'row', alignItems: 'center', padding: 20, gap: 12 },
+  answerText: { flex: 1, fontSize: 16, fontWeight: 'bold', color: '#fff' },
+  explanationCard: { flexDirection: 'row', backgroundColor: 'rgba(102, 126, 234, 0.2)', borderRadius: 12, padding: 16, gap: 12, marginBottom: 24 },
   explanationContent: { flex: 1 },
-  explanationTitle: { fontSize: 16, fontWeight: 'bold', color: '#fff', marginBottom: 8 },
-  explanationText: { fontSize: 14, color: '#a8b2d1', lineHeight: 22 },
-  resultsContainer: { flex: 1, paddingTop: 80, paddingHorizontal: 20 },
-  resultsTitle: { fontSize: 32, fontWeight: 'bold', color: '#fff', textAlign: 'center', marginBottom: 30 },
-  scoreCard: { backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: 25, padding: 30, alignItems: 'center', marginBottom: 30 },
-  scoreValue: { fontSize: 64, fontWeight: 'bold', color: '#FFD700', marginBottom: 10 },
-  scoreLabel: { fontSize: 18, color: '#a8b2d1', marginBottom: 25 },
-  statsRow: { flexDirection: 'row', gap: 30 },
+  explanationTitle: { fontSize: 13, fontWeight: 'bold', color: '#fff', marginBottom: 6 },
+  explanationText: { fontSize: 11, color: '#a8b2d1', lineHeight: 18 },
+  resultsContainer: { flex: 1, paddingTop: 64, paddingHorizontal: 16 },
+  resultsTitle: { fontSize: 26, fontWeight: 'bold', color: '#fff', textAlign: 'center', marginBottom: 24 },
+  scoreCard: { backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: 20, padding: 24, alignItems: 'center', marginBottom: 24 },
+  scoreValue: { fontSize: 51, fontWeight: 'bold', color: '#FFD700', marginBottom: 8 },
+  scoreLabel: { fontSize: 14, color: '#a8b2d1', marginBottom: 20 },
+  statsRow: { flexDirection: 'row', gap: 24 },
   statItem: { alignItems: 'center' },
-  statValue: { fontSize: 24, fontWeight: 'bold', color: '#fff', marginBottom: 5 },
-  statLabel: { fontSize: 13, color: '#a8b2d1' },
-  resultsButtons: { gap: 12 },
-  resultButton: { borderRadius: 15, overflow: 'hidden' },
-  resultButtonGradient: { paddingVertical: 16, alignItems: 'center' },
-  resultButtonText: { fontSize: 18, fontWeight: 'bold', color: '#fff' },
-  secondaryButton: { paddingVertical: 16, alignItems: 'center', backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: 15 },
-  secondaryButtonText: { fontSize: 18, fontWeight: 'bold', color: '#a8b2d1' },
+  statValue: { fontSize: 19, fontWeight: 'bold', color: '#fff', marginBottom: 4 },
+  statLabel: { fontSize: 10, color: '#a8b2d1' },
+  resultsButtons: { gap: 10 },
+  resultButton: { borderRadius: 12, overflow: 'hidden' },
+  resultButtonGradient: { paddingVertical: 13, alignItems: 'center' },
+  resultButtonText: { fontSize: 14, fontWeight: 'bold', color: '#fff' },
+  secondaryButton: { paddingVertical: 13, alignItems: 'center', backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: 12 },
+  secondaryButtonText: { fontSize: 14, fontWeight: 'bold', color: '#a8b2d1' },
 });

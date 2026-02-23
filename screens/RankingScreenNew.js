@@ -58,9 +58,9 @@ export default function RankingScreenNew({ navigation }) {
 
   const getTrendIcon = (trend) => {
     switch (trend) {
-      case 'up': return <Ionicons name="trending-up" size={16} color="#43e97b" />;
-      case 'down': return <Ionicons name="trending-down" size={16} color="#f5576c" />;
-      default: return <Ionicons name="remove" size={16} color="#a8b2d1" />;
+      case 'up': return <Ionicons name="trending-up" size={13} color="#43e97b" />;
+      case 'down': return <Ionicons name="trending-down" size={13} color="#f5576c" />;
+      default: return <Ionicons name="remove" size={13} color="#a8b2d1" />;
     }
   };
 
@@ -151,7 +151,7 @@ export default function RankingScreenNew({ navigation }) {
           >
             <Ionicons 
               name="people" 
-              size={20} 
+              size={16} 
               color={activeTab === 'turma' ? '#fff' : '#a8b2d1'} 
             />
             <Text style={[styles.tabText, activeTab === 'turma' && styles.activeTabText]}>
@@ -165,7 +165,7 @@ export default function RankingScreenNew({ navigation }) {
           >
             <Ionicons 
               name="school" 
-              size={20} 
+              size={16} 
               color={activeTab === 'escola' ? '#fff' : '#a8b2d1'} 
             />
             <Text style={[styles.tabText, activeTab === 'escola' && styles.activeTabText]}>
@@ -206,30 +206,30 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    paddingHorizontal: 20,
-    marginBottom: 15,
+    paddingHorizontal: 16,
+    marginBottom: 12,
   },
   tabContainer: {
     flexDirection: 'row',
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 15,
-    padding: 4,
-    marginBottom: 15,
+    borderRadius: 12,
+    padding: 3,
+    marginBottom: 12,
   },
   tab: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 12,
-    borderRadius: 12,
-    gap: 8,
+    paddingVertical: 10,
+    borderRadius: 10,
+    gap: 6,
   },
   activeTab: {
     backgroundColor: 'rgba(102, 126, 234, 0.5)',
   },
   tabText: {
-    fontSize: 14,
+    fontSize: 11,
     color: '#a8b2d1',
     fontWeight: '600',
   },
@@ -237,22 +237,22 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   userPositionCard: {
-    borderRadius: 15,
+    borderRadius: 12,
     overflow: 'hidden',
   },
   positionCardGradient: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    padding: 13,
   },
   positionCardLabel: {
-    fontSize: 16,
+    fontSize: 13,
     color: '#fff',
     fontWeight: '600',
   },
   positionCardValue: {
-    fontSize: 28,
+    fontSize: 22,
     color: '#fff',
     fontWeight: 'bold',
   },
@@ -260,12 +260,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   rankingList: {
-    paddingHorizontal: 20,
-    paddingBottom: 30,
+    paddingHorizontal: 16,
+    paddingBottom: 24,
   },
   rankingItem: {
-    marginBottom: 12,
-    borderRadius: 15,
+    marginBottom: 10,
+    borderRadius: 12,
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -280,36 +280,36 @@ const styles = StyleSheet.create({
   itemGradient: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
+    padding: 13,
   },
   rankingPosition: {
-    width: 40,
+    width: 32,
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: 10,
   },
   positionEmoji: {
-    fontSize: 24,
+    fontSize: 19,
   },
   positionNumber: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#a8b2d1',
   },
   avatar: {
-    fontSize: 32,
-    marginRight: 12,
+    fontSize: 26,
+    marginRight: 10,
   },
   itemInfo: {
     flex: 1,
   },
   itemName: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 4,
+    marginBottom: 3,
   },
   itemSubtext: {
-    fontSize: 12,
+    fontSize: 10,
     color: '#a8b2d1',
   },
   levelBadge: {
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   levelText: {
-    fontSize: 12,
+    fontSize: 10,
     color: '#FFD700',
     fontWeight: '600',
   },
@@ -327,15 +327,15 @@ const styles = StyleSheet.create({
   },
   pointsContainer: {
     alignItems: 'flex-end',
-    marginBottom: 4,
+    marginBottom: 3,
   },
   points: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
     color: '#fff',
   },
   pointsLabel: {
-    fontSize: 11,
+    fontSize: 9,
     color: '#a8b2d1',
   },
   trendContainer: {
