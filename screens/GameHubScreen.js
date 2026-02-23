@@ -258,12 +258,13 @@ const GameHubScreen = ({ navigation }) => {
           </Text>
 
           <TouchableOpacity
-            style={styles.startButton}
-            onPress={handleStartMission}
-            activeOpacity={0.8}
+            style={[styles.startButton, styles.startButtonDisabled]}
+            onPress={() => {}}
+            activeOpacity={1}
+            disabled={true}
           >
             <LinearGradient
-              colors={['#8B5CF6', '#D946EF']}
+              colors={['#64748B', '#475569']}
               style={styles.buttonGradient}
             >
               <Text style={styles.buttonText}>Iniciar Missão 🚀</Text>
@@ -577,6 +578,9 @@ const styles = StyleSheet.create({
   startButton: {
     borderRadius: 12,
     overflow: 'hidden',
+  },
+  startButtonDisabled: {
+    opacity: 0.5,
   },
   buttonGradient: {
     paddingVertical: 13,

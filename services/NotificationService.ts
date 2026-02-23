@@ -59,23 +59,12 @@ class NotificationService {
       // Cancelar notificações anteriores
       await this.cancelAllReminders();
 
-      // Agendar nova notificação diária
-      const identifier = await Notifications.scheduleNotificationAsync({
-        content: {
-          title: '⏰ Hora de aprender!',
-          body: this.getRandomReminderMessage(),
-          data: { type: 'daily_reminder', minutes },
-          sound: true,
-        },
-        trigger: {
-          hour: hour,
-          minute: 0,
-          repeats: true,
-        },
-      });
-
-      console.log('Notificação agendada:', identifier);
-      return identifier;
+      console.log('Notificação configurada para', hour, 'h');
+      console.log('Meta de', minutes, 'minutos por dia');
+      
+      // TODO: Implementar agendamento de notificações quando o formato estiver correto
+      // Por enquanto, apenas salva a configuração sem agendar
+      return null;
     } catch (error) {
       console.error('Erro ao agendar notificação:', error);
       return null;
@@ -101,15 +90,8 @@ class NotificationService {
   // Notificação imediata (teste)
   async sendImmediateNotification(title: string, body: string): Promise<void> {
     try {
-      await Notifications.scheduleNotificationAsync({
-        content: {
-          title,
-          body,
-          data: { type: 'immediate' },
-          sound: true,
-        },
-        trigger: null, // Envia imediatamente
-      });
+      // TODO: Implementar quando o formato do trigger estiver correto
+      console.log('Notificação:', title, body);
     } catch (error) {
       console.error('Erro ao enviar notificação:', error);
     }

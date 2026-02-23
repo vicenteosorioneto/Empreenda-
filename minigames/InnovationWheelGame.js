@@ -96,7 +96,8 @@ const InnovationWheelGame = ({ navigation }) => {
 
   const handleQuizAnswer = (selectedOption) => {
     const currentQuestion = quizQuestions[currentQuizQuestion];
-    const isCorrect = selectedOption === currentQuestion.correctAnswer;
+    const selectedOptionData = currentQuestion.options.find(opt => opt.id === selectedOption);
+    const isCorrect = selectedOptionData && selectedOptionData.correct;
     
     if (isCorrect) {
       setQuizScore(quizScore + 100);
@@ -160,14 +161,14 @@ const InnovationWheelGame = ({ navigation }) => {
             <Text style={styles.quizQuestion}>{question.question}</Text>
             
             <View style={styles.quizOptionsContainer}>
-              {['a', 'b', 'c', 'd'].map((option) => (
+              {question.options && question.options.map((option) => (
                 <TouchableOpacity
-                  key={option}
+                  key={option.id}
                   style={styles.quizOption}
-                  onPress={() => handleQuizAnswer(option)}
+                  onPress={() => handleQuizAnswer(option.id)}
                 >
-                  <Text style={styles.quizOptionLetter}>{option.toUpperCase()}</Text>
-                  <Text style={styles.quizOptionText}>{question[option]}</Text>
+                  <Text style={styles.quizOptionLetter}>{option.id.toUpperCase()}</Text>
+                  <Text style={styles.quizOptionText}>{option.text}</Text>
                 </TouchableOpacity>
               ))}
             </View>

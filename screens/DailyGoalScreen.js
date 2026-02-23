@@ -28,7 +28,12 @@ const DailyGoalScreen = ({ navigation, route }) => {
 
   const handleContinue = async () => {
     if (notificationsEnabled) {
-      await NotificationService.scheduleDailyReminder(dailyMinutes, selectedHour);
+      try {
+        await NotificationService.scheduleDailyReminder(dailyMinutes, selectedHour);
+      } catch (error) {
+        console.log('Não foi possível agendar notificação, mas continuando...', error);
+        // Continua o fluxo mesmo se a notificação falhar
+      }
     }
 
     // Atualizar progresso
